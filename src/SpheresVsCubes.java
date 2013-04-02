@@ -71,6 +71,9 @@ public class SpheresVsCubes extends PApplet {
 		Box b = new Box(new Vector3f(), new Vector3f(150, 5, 450), 0, Color.GRAY, this);
 		dynamicsWorld.addRigidBody(b.body);
 		
+		b = new Box(new Vector3f(200, 0, 0), new Vector3f(150, 5, 450), 0, Color.GRAY, this);
+		dynamicsWorld.addRigidBody(b.body);
+		
 		b = new Box(new Vector3f(0, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
 		dynamicsWorld.addRigidBody(b.body);
 		
@@ -83,7 +86,7 @@ public class SpheresVsCubes extends PApplet {
 		b = new Box(new Vector3f(150, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
 		dynamicsWorld.addRigidBody(b.body);
 		
-		player = new Sphere(new Vector3f(0, 250, 0), 20, 5, Color.GREEN, this);
+		player = new Sphere(new Vector3f(0, 250, 0), 20, 1, Color.GREEN, this);
 		dynamicsWorld.addRigidBody(player.body);
     }
 
@@ -107,15 +110,36 @@ public class SpheresVsCubes extends PApplet {
 		beginCamera();
 		
 		Vector3f pos = player.getPos();
-		
+		// Rotate the player
 		if (Input.checkKey(KeyEvent.VK_A) || Input.checkKey(LEFT)) {
-			rotation--;
+			rotation-=3;
 		}
 		else if (Input.checkKey(KeyEvent.VK_D) || Input.checkKey(RIGHT)) {
-			rotation++;
+			rotation+=3;
+		}
+		float rads = radians(rotation);
+		float speed = 25;
+		// Move the player
+		Vector3f velocity = player.body.getLinearVelocity(new Vector3f());
+		if (Input.checkKey(KeyEvent.VK_W) || Input.checkKey(UP)) {
+			velocity.x = -speed * cos(rads);
+			velocity.z = -speed * sin(rads);
+		}
+		else if (Input.checkKey(KeyEvent.VK_S) || Input.checkKey(DOWN)) {
+			velocity.x = speed * cos(rads);
+			velocity.z = speed * sin(rads);
+		}
+		else {
+			velocity.x = 0;
+			velocity.z = 0;
+		}
+		player.body.setLinearVelocity(velocity);
+		// Make the player jump
+		if (Input.checkKey(KeyEvent.VK_SPACE)) {
+			player.body.applyCentralImpulse(new Vector3f(0, 1, 0));
 		}
 		
-		float rads = radians(rotation);
+		
 		camera(pos.x + 100 * cos(rads), pos.y - 50, pos.z + 100 * sin(rads), pos.x, pos.y, pos.z, 0, 1, 0);
 		
 		// Do physics simulation

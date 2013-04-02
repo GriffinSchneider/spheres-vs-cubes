@@ -64,6 +64,12 @@ public abstract class PObject {
 		applet.pushMatrix();
 		body.getMotionState().getWorldTransform(trans);
 		applet.translate(trans.origin.x, -trans.origin.y, trans.origin.z);
+		/*
+		Quat4f rotation = getRotation();
+		applet.rotateX(rotation.x);
+		applet.rotateY(rotation.y);
+		applet.rotateZ(rotation.z);
+		*/
 		draw();
 		applet.popMatrix();
 	}
