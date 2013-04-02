@@ -1,3 +1,5 @@
+import java.awt.Color;
+
 import javax.vecmath.Vector3f;
 
 import processing.core.PApplet;
@@ -7,16 +9,9 @@ import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysics.collision.shapes.BoxShape;
-import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
-import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
-import com.bulletphysics.linearmath.DefaultMotionState;
-import com.bulletphysics.linearmath.Transform;
-import com.bulletphysics.util.ObjectArrayList;
 
 
 public class SpheresVsCubes extends PApplet {
@@ -25,7 +20,17 @@ public class SpheresVsCubes extends PApplet {
 	private static DiscreteDynamicsWorld dynamicsWorld;
     
 	public static void main(String[] args) {
-		// collision configuration contains default setup for memory, collision
+		PApplet.main(new String[] { "SpheresVsCubes" });
+	}
+   
+    @Override
+	public void setup() {
+		size(500, 500, P3D);
+		initPhysics();
+	}
+    
+    public void initPhysics() {
+    	// collision configuration contains default setup for memory, collision
 		// setup. Advanced users can create their own configuration.
 		CollisionConfiguration collisionConfiguration = new DefaultCollisionConfiguration();
 
@@ -41,10 +46,7 @@ public class SpheresVsCubes extends PApplet {
 		Vector3f worldAabbMin = new Vector3f(-10000, -10000, -10000);
 		Vector3f worldAabbMax = new Vector3f(10000, 10000, 10000);
 		int maxProxies = 1024;
-		AxisSweep3 overlappingPairCache =
-				new AxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
-		//BroadphaseInterface overlappingPairCache = new SimpleBroadphase(
-		//		maxProxies);
+		AxisSweep3 overlappingPairCache = new AxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
 		// the default constraint solver. For parallel processing you can use a
 		// different solver (see Extras/BulletMultiThreaded)
@@ -54,47 +56,25 @@ public class SpheresVsCubes extends PApplet {
 
 		dynamicsWorld.setGravity(new Vector3f(0, -10, 0));
 
-		// create a few basic rigid bodies
-		CollisionShape groundShape = new BoxShape(new Vector3f(50.f, 50.f, 50.f));
+		Box b = new Box(new Vector3f(), new Vector3f(150, 5, 150), 0, Color.WHITE, this);
+		dynamicsWorld.addRigidBody(b.body);
+		
+		b = new Box(new Vector3f(0, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
+		dynamicsWorld.addRigidBody(b.body);
+		
+		b = new Box(new Vector3f(-50, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
+		dynamicsWorld.addRigidBody(b.body);
+		
+		b = new Box(new Vector3f(50, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
+		dynamicsWorld.addRigidBody(b.body);
+		
+		b = new Box(new Vector3f(150, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
+		dynamicsWorld.addRigidBody(b.body);
 
-		// keep track of the shapes, we release memory at exit.
-		// make sure to re-use collision shapes among rigid bodies whenever
-		// possible!
-		ObjectArrayList<CollisionShape> collisionShapes = new ObjectArrayList<CollisionShape>();
-
-		collisionShapes.add(groundShape);
-
-		Transform groundTransform = new Transform();
-		groundTransform.setIdentity();
-		groundTransform.origin.set(new Vector3f(0.f, -56.f, 0.f));
-
-		{
-			float mass = 0f;
-
-			// rigidbody is dynamic if and only if mass is non zero,
-			// otherwise static
-			boolean isDynamic = (mass != 0f);
-
-			Vector3f localInertia = new Vector3f(0, 0, 0);
-			if (isDynamic) {
-				groundShape.calculateLocalInertia(mass, localInertia);
-			}
-
-			// using motionstate is recommended, it provides interpolation
-			// capabilities, and only synchronizes 'active' objects
-			DefaultMotionState myMotionState = new DefaultMotionState(groundTransform);
-			RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(
-					mass, myMotionState, groundShape, localInertia);
-			RigidBody body = new RigidBody(rbInfo);
-
-			// add the body to the dynamics world
-			dynamicsWorld.addRigidBody(body);
-		}
-
+		/*
 		{
 			// create a dynamic rigidbody
 			CollisionShape colShape = new SphereShape(1.f);
-			collisionShapes.add(colShape);
 
 			// Create Dynamic Objects
 			Transform startTransform = new Transform();
@@ -124,18 +104,8 @@ public class SpheresVsCubes extends PApplet {
 
 			dynamicsWorld.addRigidBody(body);
 		}
-
-		
-		for (int i=0; i<100; i++) {
-
-		}
-	}
-    
-	
-    @Override
-	public void setup() {
-		size(500, 500, P3D);
-	}
+		*/
+    }
 
 	@Override
 	public void draw() {
@@ -162,10 +132,10 @@ public class SpheresVsCubes extends PApplet {
 			CollisionObject obj = dynamicsWorld.getCollisionObjectArray().getQuick(j);
 			RigidBody body = RigidBody.upcast(obj);
 			if (body != null && body.getMotionState() != null) {
-				Transform trans = new Transform();
-				body.getMotionState().getWorldTransform(trans);
-				System.out.printf("world pos = %f,%f,%f\n", trans.origin.x,
-						trans.origin.y, trans.origin.z);
+				PObject pobj;
+				if ((pobj = (PObject) body.getUserPointer()) != null) {
+					pobj.visit();
+				}
 			}
 		}
 	}
