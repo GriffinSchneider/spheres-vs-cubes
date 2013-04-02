@@ -26,6 +26,8 @@ public class SpheresVsCubes extends PApplet {
     @Override
 	public void setup() {
 		size(500, 500, P3D);
+		noStroke();
+		lights();
 		initPhysics();
 	}
     
@@ -70,6 +72,9 @@ public class SpheresVsCubes extends PApplet {
 		
 		b = new Box(new Vector3f(150, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
 		dynamicsWorld.addRigidBody(b.body);
+		
+		Sphere s = new Sphere(new Vector3f(0, 250, 0), 20, 5, Color.GREEN, this);
+		dynamicsWorld.addRigidBody(s.body);
 
 		/*
 		{
