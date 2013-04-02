@@ -1,5 +1,7 @@
+package Objects;
 import java.awt.Color;
 
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.collision.shapes.CollisionShape;
@@ -25,6 +27,16 @@ public abstract class PObject {
 		pos = pos_;
 		mass = mass_;
 		color = color_;
+	}
+	
+	public Vector3f getPos() {
+		Vector3f tmp = new Vector3f(body.getMotionState().getWorldTransform(trans).origin);
+		tmp.y = -tmp.y;
+		return tmp;
+	}
+	
+	public Quat4f getRotation() {
+		return body.getMotionState().getWorldTransform(trans).getRotation(new Quat4f());
 	}
 	
 	protected void addShape(CollisionShape shape) {

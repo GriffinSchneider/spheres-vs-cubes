@@ -1,8 +1,15 @@
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import processing.core.PApplet;
+
+import Objects.Box;
+import Objects.PObject;
+import Objects.Sphere;
 
 import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.dispatch.CollisionConfiguration;
@@ -22,11 +29,14 @@ public class SpheresVsCubes extends PApplet {
 	public static void main(String[] args) {
 		PApplet.main(new String[] { "SpheresVsCubes" });
 	}
+	
+	private Sphere player;
    
     @Override
 	public void setup() {
 		size(500, 500, P3D);
-		noStroke();
+		//noStroke();
+		strokeWeight(0.1f);  // Default
 		lights();
 		initPhysics();
 	}
@@ -58,7 +68,7 @@ public class SpheresVsCubes extends PApplet {
 
 		dynamicsWorld.setGravity(new Vector3f(0, -10, 0));
 
-		Box b = new Box(new Vector3f(), new Vector3f(150, 5, 150), 0, Color.WHITE, this);
+		Box b = new Box(new Vector3f(), new Vector3f(150, 5, 450), 0, Color.GRAY, this);
 		dynamicsWorld.addRigidBody(b.body);
 		
 		b = new Box(new Vector3f(0, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
@@ -73,50 +83,15 @@ public class SpheresVsCubes extends PApplet {
 		b = new Box(new Vector3f(150, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
 		dynamicsWorld.addRigidBody(b.body);
 		
-		Sphere s = new Sphere(new Vector3f(0, 250, 0), 20, 5, Color.GREEN, this);
-		dynamicsWorld.addRigidBody(s.body);
-
-		/*
-		{
-			// create a dynamic rigidbody
-			CollisionShape colShape = new SphereShape(1.f);
-
-			// Create Dynamic Objects
-			Transform startTransform = new Transform();
-			startTransform.setIdentity();
-
-			float mass = 1f;
-
-			// rigidbody is dynamic if and only if mass is non zero,
-			// otherwise static
-			boolean isDynamic = (mass != 0f);
-
-			Vector3f localInertia = new Vector3f(0, 0, 0);
-			if (isDynamic) {
-				colShape.calculateLocalInertia(mass, localInertia);
-			}
-
-			startTransform.origin.set(new Vector3f(2, 10, 0));
-
-			// using motionstate is recommended, it provides
-			// interpolation capabilities, and only synchronizes
-			// 'active' objects
-			DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
-
-			RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(
-					mass, myMotionState, colShape, localInertia);
-			RigidBody body = new RigidBody(rbInfo);
-
-			dynamicsWorld.addRigidBody(body);
-		}
-		*/
+		player = new Sphere(new Vector3f(0, 250, 0), 20, 5, Color.GREEN, this);
+		dynamicsWorld.addRigidBody(player.body);
     }
 
 	@Override
 	public void draw() {
 		background(0, 0, 0);
 		translate(width/2f, height/2f, 0);
-		
+
 		// Draw FPS counter
 		pushMatrix();
 		translate(0, 0, 100);
@@ -128,6 +103,20 @@ public class SpheresVsCubes extends PApplet {
 		if (frameCount % 200 == 0) {
 			System.out.println("" + frameRate + " FPS");
 		}
+		
+		beginCamera();
+		
+		Vector3f pos = player.getPos();
+		
+		if (Input.checkKey(KeyEvent.VK_A) || Input.checkKey(LEFT)) {
+			rotation--;
+		}
+		else if (Input.checkKey(KeyEvent.VK_D) || Input.checkKey(RIGHT)) {
+			rotation++;
+		}
+		
+		float rads = radians(rotation);
+		camera(pos.x + 100 * cos(rads), pos.y - 50, pos.z + 100 * sin(rads), pos.x, pos.y, pos.z, 0, 1, 0);
 		
 		// Do physics simulation
 		dynamicsWorld.stepSimulation(1.f / 60.f, 10);
@@ -143,11 +132,17 @@ public class SpheresVsCubes extends PApplet {
 				}
 			}
 		}
+		endCamera();
+	}
+
+	private float rotation = 0;
+	@Override
+	public void keyPressed() {
+		Input.keyPressed(keyCode);
 	}
 
 	@Override
-	public void keyPressed() {
-
+	public void keyReleased() {
+		Input.keyReleased(keyCode);
 	}
-
 }
