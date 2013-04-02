@@ -23,4 +23,8 @@ public class Sphere extends PObject {
 		applet.sphere(radius);
 	}
 
+	@Override
+	public void update() {
+	}
+
 }

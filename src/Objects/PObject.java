@@ -35,10 +35,6 @@ public abstract class PObject {
 		return tmp;
 	}
 	
-	public Quat4f getRotation() {
-		return body.getMotionState().getWorldTransform(trans).getRotation(new Quat4f());
-	}
-	
 	protected void addShape(CollisionShape shape) {
 		trans.setIdentity();
 		trans.origin.set(pos);
@@ -61,6 +57,8 @@ public abstract class PObject {
 	}
 	
 	public void visit() {
+		update();
+		
 		applet.pushMatrix();
 		body.getMotionState().getWorldTransform(trans);
 		applet.translate(trans.origin.x, -trans.origin.y, trans.origin.z);
@@ -73,5 +71,7 @@ public abstract class PObject {
 		draw();
 		applet.popMatrix();
 	}
+	
 	public abstract void draw();
+	public abstract void update();
 }

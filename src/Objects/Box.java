@@ -22,4 +22,8 @@ public class Box extends PObject {
 		applet.fill(color.getRGB());
 		applet.box(dim.x, dim.y, dim.z);
 	}
+
+	@Override
+	public void update() {
+	}
 }
