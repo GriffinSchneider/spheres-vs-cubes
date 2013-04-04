@@ -32,7 +32,7 @@ public class SpheresVsCubes extends PApplet {
    
     @Override
 	public void setup() {
-		size(500, 500, P3D);
+		size(800, 600, P3D);
 		//noStroke();
 		strokeWeight(0.1f);  // Default
 		lights();
@@ -72,16 +72,20 @@ public class SpheresVsCubes extends PApplet {
 		b = new Box(new Vector3f(200, 0, 0), new Vector3f(150, 5, 450), 0, Color.GRAY, this);
 		dynamicsWorld.addRigidBody(b.body);
 		
+		b = new Box(new Vector3f(0, 100, 0), new Vector3f(150, 5, 150), 0, Color.GRAY, this);
+		dynamicsWorld.addRigidBody(b.body);
+		
+		b = new Box(new Vector3f(-50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, this);
+		dynamicsWorld.addRigidBody(b.body);
+		
+		b = new Box(new Vector3f(50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, this);
+		dynamicsWorld.addRigidBody(b.body);
+		
 		b = new Box(new Vector3f(0, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
 		dynamicsWorld.addRigidBody(b.body);
-		
-		b = new Box(new Vector3f(-50, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
-		dynamicsWorld.addRigidBody(b.body);
-		
-		b = new Box(new Vector3f(50, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
-		dynamicsWorld.addRigidBody(b.body);
-		
 		b = new Box(new Vector3f(150, 150, 0), new Vector3f(20, 20, 20), 5, Color.RED, this);
+		dynamicsWorld.addRigidBody(b.body);
+		b = new Box(new Vector3f(150, 150, 100), new Vector3f(20, 20, 20), 5, Color.RED, this);
 		dynamicsWorld.addRigidBody(b.body);
 		
 		player = new Player(new Vector3f(0, 250, 0), this);
@@ -105,8 +109,6 @@ public class SpheresVsCubes extends PApplet {
 			System.out.println("" + frameRate + " FPS");
 		}
 		
-		beginCamera();
-		
 		Vector3f pos = player.getPos();
 		float rads = radians(player.getRotation());
 		
@@ -126,7 +128,6 @@ public class SpheresVsCubes extends PApplet {
 				}
 			}
 		}
-		endCamera();
 	}
 	
 	@Override
