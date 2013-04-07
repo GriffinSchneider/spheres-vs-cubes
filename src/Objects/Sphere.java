@@ -14,7 +14,7 @@ public class Sphere extends PObject {
 	public Sphere(Vector3f pos_, float radius_, float mass_, Color color_, PApplet applet_) {
 		super(pos_, mass_, color_, applet_);
 		radius = radius_;
-		addShape(new SphereShape(radius));
+		addShape(new SphereShape(radius / GRAPHICS_UNITS_PER_PHYSICS_UNITS));
 	}
 
 	@Override

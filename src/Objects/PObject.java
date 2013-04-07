@@ -14,6 +14,8 @@ import processing.core.PApplet;
 
 
 public abstract class PObject {
+	public static float GRAPHICS_UNITS_PER_PHYSICS_UNITS = 50.0f;
+	
 	protected PApplet applet;
 	public RigidBody body;
 	private Transform trans;
@@ -29,15 +31,23 @@ public abstract class PObject {
 		color = color_;
 	}
 	
-	public Vector3f getPos() {
+	public Vector3f getPhysicsPos() {
 		Vector3f tmp = new Vector3f(body.getMotionState().getWorldTransform(trans).origin);
 		tmp.y = -tmp.y;
 		return tmp;
 	}
 	
+	public Vector3f getGraphicsPos() {
+		Vector3f tmp = this.getPhysicsPos();
+		tmp.scale(GRAPHICS_UNITS_PER_PHYSICS_UNITS);
+		return tmp;
+	}
+	
 	protected void addShape(CollisionShape shape) {
 		trans.setIdentity();
-		trans.origin.set(pos);
+		Vector3f physicsPos = new Vector3f(pos);
+		physicsPos.scale(1.0f / GRAPHICS_UNITS_PER_PHYSICS_UNITS);
+		trans.origin.set(physicsPos);
 
 		// rigidbody is dynamic if and only if mass is non zero,
 		// otherwise static
@@ -57,11 +67,15 @@ public abstract class PObject {
 	}
 	
 	public void visit() {
+		body.activate();
 		update();
 		
 		applet.pushMatrix();
 		body.getMotionState().getWorldTransform(trans);
-		applet.translate(trans.origin.x, -trans.origin.y, trans.origin.z);
+		applet.translate(
+				trans.origin.x * GRAPHICS_UNITS_PER_PHYSICS_UNITS, 
+				-trans.origin.y * GRAPHICS_UNITS_PER_PHYSICS_UNITS,
+				trans.origin.z * GRAPHICS_UNITS_PER_PHYSICS_UNITS);
 		Quat4f r = trans.getRotation(new Quat4f());
 		applet.rotate(r.w, r.x, r.y, r.z);
 		
