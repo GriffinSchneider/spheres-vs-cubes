@@ -82,7 +82,7 @@ public abstract class PObject {
 			y = q1.y / s;
 			z = q1.z / s;
 		}
-		applet.rotate(-angle, x, y, z);
+		applet.rotate(-angle, x, -y, z);
 	}
 	
 	public void visit() {
