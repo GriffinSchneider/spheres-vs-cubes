@@ -22,7 +22,9 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 public class SpheresVsCubes extends PApplet {
 	private static final long serialVersionUID = 1L;
 	
-	private static DiscreteDynamicsWorld dynamicsWorld;
+	public static final float WORLD_GRAVITY = 500f / PObject.GRAPHICS_UNITS_PER_PHYSICS_UNITS;
+	
+	private DiscreteDynamicsWorld dynamicsWorld;
     
 	public static void main(String[] args) {
 		PApplet.main(new String[] { "SpheresVsCubes" });
@@ -63,6 +65,7 @@ public class SpheresVsCubes extends PApplet {
 		SequentialImpulseConstraintSolver solver = new SequentialImpulseConstraintSolver();
 
 		dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+		dynamicsWorld.setGravity(new Vector3f(0, -WORLD_GRAVITY, 0));
 
 		Box b = new Box(new Vector3f(), new Vector3f(150, 5, 450), 0, Color.GRAY, this);
 		dynamicsWorld.addRigidBody(b.body);

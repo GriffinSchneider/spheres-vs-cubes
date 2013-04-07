@@ -11,17 +11,17 @@ import Utils.Input;
 
 public class Player extends Sphere {
 	// Initial radius in graphics units of the player sphere
-    public static final float PLAYER_INITIAL_RADIUS = 12f;
+    public static final float PLAYER_INITIAL_RADIUS = 10;
     // Magnitude of impulse to apply each frame in the x-direction to make the player move
-    public static final float PLAYER_MOVEMENT_IMPULSE = 0.2f;
+    public static final float PLAYER_MOVEMENT_IMPULSE = 20 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
     // Maximum x-velocity that the player can reach before we stop increasing the velocity
     // due to key presses.
-    public static final float PLAYER_MAX_SPEED = 1.5f;
+    public static final float PLAYER_MAX_SPEED = 140 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
     // Amount to decrease the player's x-velocity each frame if no movement buttons
     // are being pressed.
-    public static final float PLAYER_NO_MOVEMENT_DAMPING = 0.08f;
+    public static final float PLAYER_NO_MOVEMENT_DAMPING = 4 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
     // Magnitude of impulse in the y-direction to apply to make the player "jump"
-    public static final float PLAYER_JUMP_IMPULSE = 0.8f;
+    public static final float PLAYER_JUMP_IMPULSE = 70 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
 	
 	private float rotation;
 	
