@@ -19,12 +19,20 @@ public class Sphere extends PObject {
 
 	@Override
 	public void draw() {
+		//applet.noStroke();
+		applet.strokeWeight(0.05f);
 		applet.fill(color.getRGB());
 		applet.sphere(radius);
+		applet.strokeWeight(1f);
+		//applet.stroke(0);
 	}
 
 	@Override
 	public void update() {
+	}
+
+	@Override
+	public void onCollision(PObject object) {
 	}
 
 }

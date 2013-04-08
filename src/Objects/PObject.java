@@ -43,6 +43,8 @@ public abstract class PObject {
 		return tmp;
 	}
 	
+	public abstract void onCollision(PObject object);
+	
 	protected void addShape(CollisionShape shape) {
 		trans.setIdentity();
 		Vector3f physicsPos = new Vector3f(pos);

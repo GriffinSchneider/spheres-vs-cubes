@@ -21,20 +21,27 @@ public class Player extends Sphere {
     // are being pressed.
     public static final float PLAYER_NO_MOVEMENT_DAMPING = 4 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
     // Magnitude of impulse in the y-direction to apply to make the player "jump"
-    public static final float PLAYER_JUMP_IMPULSE = 70 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
+    public static final float PLAYER_JUMP_IMPULSE = 200 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
 	
 	private float rotation;
+	private boolean canJump;
 	
 	public Player(Vector3f pos_, PApplet applet_) {
 		super(pos_, PLAYER_INITIAL_RADIUS, 2, Color.GREEN, applet_);
 		rotation = 0;
 		body.setFriction(0.8f);
+		canJump = false;
 	}
 	
 	public float getRotation() {
 		return rotation;
 	}
 
+	@Override
+	public void onCollision(PObject object) {
+		canJump = true;
+	}
+	
 	@Override
 	public void update() {
 		// Rotate the player
@@ -68,8 +75,9 @@ public class Player extends Sphere {
 			body.applyCentralImpulse(new Vector3f(-dampX, 0, -dampZ));
 		}
 		// Make the player jump
-		if (Input.checkKey(KeyEvent.VK_SPACE)) {
+		if (Input.checkKey(KeyEvent.VK_SPACE) && canJump) {
 			body.applyCentralImpulse(new Vector3f(0, PLAYER_JUMP_IMPULSE, 0));
+			canJump = false;
 		}
 	}
 }

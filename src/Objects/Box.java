@@ -29,4 +29,8 @@ public class Box extends PObject {
 	@Override
 	public void update() {
 	}
+
+	@Override
+	public void onCollision(PObject object) {
+	}
 }
