@@ -10,7 +10,7 @@ public class Bullet extends Box {
 	private int count;
 	
 	public Bullet(Vector3f pos_, SpheresVsCubes applet_) {
-		super(pos_, new Vector3f(5, 5, 5), 2, Color.ORANGE, applet_);
+		super(pos_, new Vector3f(5, 5, 5), 0.5f, Color.ORANGE, applet_);
 		count = 0;
 	}
 	

@@ -5,6 +5,7 @@ import java.awt.Color;
 import javax.vecmath.Vector3f;
 
 public class Enemy extends Box {
+	private static final int BULLET_SPEED = 5;
 	private static final int SHOT_DELAY = 50;
 	private int count;
 	
@@ -18,9 +19,21 @@ public class Enemy extends Box {
 		if (count++ > SHOT_DELAY) {
 			count = 0;
 			
-			Bullet bullet = new Bullet(this.getGraphicsPos(), applet);
-			// Todo shoot at player
-			bullet.body.applyCentralImpulse(new Vector3f(5, 5, 5));
+			Vector3f pos = getGraphicsPos();
+			
+			Vector3f norm = applet.player.getGraphicsPos();
+			norm.sub(pos);
+			norm.normalize();
+			
+			Vector3f bulletPos = new Vector3f(norm.x * dim.x, norm.y * dim.y + dim.y / 2, norm.z * dim.z);
+			bulletPos.add(pos);
+			
+			Bullet bullet = new Bullet(bulletPos, applet);
+			
+			Vector3f impulse = new Vector3f(norm);
+			impulse.scale(BULLET_SPEED);
+
+			bullet.body.applyCentralImpulse(impulse);
 		}
 	}
 

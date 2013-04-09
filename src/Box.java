@@ -7,7 +7,7 @@ import com.bulletphysics.collision.shapes.BoxShape;
 
 
 public class Box extends PObject {
-	private Vector3f dim;
+	protected Vector3f dim;
 	
 	public Box(Vector3f pos, Vector3f dim_, float mass, Color color_, SpheresVsCubes applet_) {
 		super(color_, applet_);

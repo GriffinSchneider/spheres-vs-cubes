@@ -30,7 +30,7 @@ public class SpheresVsCubes extends PApplet {
 		PApplet.main(new String[] { "SpheresVsCubes" });
 	}
 	
-	private Player player;
+	Player player;
    
     @Override
 	public void setup() {
