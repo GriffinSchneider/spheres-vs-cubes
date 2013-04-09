@@ -5,6 +5,7 @@ import javax.vecmath.Vector3f;
 import processing.core.PApplet;
 
 import Objects.Box;
+import Objects.Enemy;
 import Objects.PObject;
 import Objects.Player;
 import Utils.Input;
@@ -83,11 +84,11 @@ public class SpheresVsCubes extends PApplet {
 		b = new Box(new Vector3f(50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, this);
 		dynamicsWorld.addRigidBody(b.body);
 		
-		b = new Box(new Vector3f(0, 150, 0), new Vector3f(20, 20, 20), 1, Color.RED, this);
+		b = new Enemy(new Vector3f(0, 150, 0), this);
 		dynamicsWorld.addRigidBody(b.body);
-		b = new Box(new Vector3f(150, 150, 0), new Vector3f(20, 20, 20), 1, Color.RED, this);
+		b = new Enemy(new Vector3f(150, 150, 0), this);
 		dynamicsWorld.addRigidBody(b.body);
-		b = new Box(new Vector3f(150, 150, 100), new Vector3f(20, 20, 20), 1, Color.RED, this);
+		b = new Enemy(new Vector3f(150, 150, 100), this);
 		dynamicsWorld.addRigidBody(b.body);
 		
 		b = new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 10, 5000), 0, Color.GRAY, this);
@@ -100,7 +101,7 @@ public class SpheresVsCubes extends PApplet {
 	@Override
 	public void draw() {
 		background(0, 0, 0);
-		translate(width/2f, height/2f, 0);
+		translate(width / 2f, height / 2f, 0);
 		
 		// Print FPS every 120 frames (ideally, 2 seconds)
 		if (frameCount % 200 == 0) {
