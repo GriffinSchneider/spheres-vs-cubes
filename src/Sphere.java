@@ -1,32 +1,35 @@
-package Objects;
+
 import java.awt.Color;
 
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.collision.shapes.SphereShape;
 
-import processing.core.PApplet;
-
 
 public class Sphere extends PObject {
-	private float radius;
+	protected float radius;
 	
-	public Sphere(Vector3f pos_, float radius_, float mass_, Color color_, PApplet applet_) {
-		super(pos_, mass_, color_, applet_);
+	public Sphere(Vector3f pos, float radius_, float mass, Color color_, SpheresVsCubes applet_) {
+		super(color_, applet_);
 		radius = radius_;
-		addShape(new SphereShape(radius / GRAPHICS_UNITS_PER_PHYSICS_UNITS));
+		addShape(pos, mass, new SphereShape(radius / GRAPHICS_UNITS_PER_PHYSICS_UNITS));
 	}
 
 	@Override
 	public void draw() {
-		//applet.noStroke();
 		applet.strokeWeight(0.05f);
 		applet.fill(color.getRGB());
 		applet.sphere(radius);
 		applet.strokeWeight(1f);
-		//applet.stroke(0);
 	}
-
+	
+	public void setRadius(float radius_) {
+		if (radius > 0) {
+			radius = radius_;
+			this.body.setCollisionShape(new SphereShape(radius / GRAPHICS_UNITS_PER_PHYSICS_UNITS));
+		}
+	}
+	
 	@Override
 	public void update() {
 	}

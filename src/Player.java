@@ -1,4 +1,4 @@
-package Objects;
+
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -7,7 +7,6 @@ import javax.vecmath.Vector3f;
 
 import processing.core.PApplet;
 
-import Utils.Input;
 
 public class Player extends Sphere {
 	// Initial radius in graphics units of the player sphere
@@ -26,7 +25,7 @@ public class Player extends Sphere {
 	private float rotation;
 	private boolean canJump;
 	
-	public Player(Vector3f pos_, PApplet applet_) {
+	public Player(Vector3f pos_, SpheresVsCubes applet_) {
 		super(pos_, PLAYER_INITIAL_RADIUS, 2, Color.GREEN, applet_);
 		rotation = 0;
 		body.setFriction(0.8f);
@@ -39,7 +38,13 @@ public class Player extends Sphere {
 
 	@Override
 	public void onCollision(PObject object) {
-		canJump = true;
+		if (object instanceof Bullet) {
+			object.remove();
+			this.setRadius(--this.radius);
+		}
+		else {
+			canJump = true;
+		}
 	}
 	
 	@Override

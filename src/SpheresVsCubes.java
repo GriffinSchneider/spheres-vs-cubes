@@ -1,14 +1,11 @@
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.vecmath.Vector3f;
 
 import processing.core.PApplet;
 
-import Objects.Box;
-import Objects.Enemy;
-import Objects.PObject;
-import Objects.Player;
-import Utils.Input;
 
 import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.dispatch.CollisionConfiguration;
@@ -27,7 +24,7 @@ public class SpheresVsCubes extends PApplet {
 	
 	public static final float WORLD_GRAVITY = 500f / PObject.GRAPHICS_UNITS_PER_PHYSICS_UNITS;
 	
-	private DiscreteDynamicsWorld dynamicsWorld;
+	protected DiscreteDynamicsWorld dynamicsWorld;
     
 	public static void main(String[] args) {
 		PApplet.main(new String[] { "SpheresVsCubes" });
@@ -38,7 +35,6 @@ public class SpheresVsCubes extends PApplet {
     @Override
 	public void setup() {
 		size(800, 600, P3D);
-		//noStroke();
 		strokeWeight(1f);  // Default
 		lights();
 		initPhysics();
@@ -69,33 +65,25 @@ public class SpheresVsCubes extends PApplet {
 		dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 		dynamicsWorld.setGravity(new Vector3f(0, -WORLD_GRAVITY, 0));
 
-		Box b = new Box(new Vector3f(), new Vector3f(150, 5, 450), 0, Color.GRAY, this);
-		dynamicsWorld.addRigidBody(b.body);
+		new Box(new Vector3f(), new Vector3f(150, 5, 450), 0, Color.GRAY, this);
 		
-		b = new Box(new Vector3f(200, 0, 0), new Vector3f(150, 5, 450), 0, Color.GRAY, this);
-		dynamicsWorld.addRigidBody(b.body);
+		new Box(new Vector3f(200, 0, 0), new Vector3f(150, 5, 450), 0, Color.GRAY, this);
 		
-		b = new Box(new Vector3f(0, 100, 0), new Vector3f(150, 5, 150), 0, Color.GRAY, this);
-		dynamicsWorld.addRigidBody(b.body);
+		new Box(new Vector3f(0, 100, 0), new Vector3f(150, 5, 150), 0, Color.GRAY, this);
 		
-		b = new Box(new Vector3f(-50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, this);
-		dynamicsWorld.addRigidBody(b.body);
+		new Box(new Vector3f(-50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, this);
 		
-		b = new Box(new Vector3f(50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, this);
-		dynamicsWorld.addRigidBody(b.body);
+		new Box(new Vector3f(50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, this);
 		
-		b = new Enemy(new Vector3f(0, 150, 0), this);
-		dynamicsWorld.addRigidBody(b.body);
-		b = new Enemy(new Vector3f(150, 150, 0), this);
-		dynamicsWorld.addRigidBody(b.body);
-		b = new Enemy(new Vector3f(150, 150, 100), this);
-		dynamicsWorld.addRigidBody(b.body);
+		new Enemy(new Vector3f(0, 150, 0), this);
+	
+		new Enemy(new Vector3f(150, 150, 0), this);
+
+		new Enemy(new Vector3f(150, 150, 100), this);
 		
-		b = new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 10, 5000), 0, Color.GRAY, this);
-		dynamicsWorld.addRigidBody(b.body);
+		new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 10, 5000), 0, Color.GRAY, this);
 		
 		player = new Player(new Vector3f(0, 250, 0), this);
-		dynamicsWorld.addRigidBody(player.body);
     }
 
 	@Override
@@ -115,13 +103,12 @@ public class SpheresVsCubes extends PApplet {
 		
 		//ortho(0, width, 0, height, -1000, 1000); // This looks really cool
 		camera(playerPos.x + 100*cos(playerRotation), 
-			   playerPos.y - 50, 
+			   -(playerPos.y + 50), 
 			   playerPos.z + 100*sin(playerRotation), 
 			   playerPos.x, 
-			   playerPos.y, 
+			   -playerPos.y, 
 			   playerPos.z, 
 			   0, 1, 0);
-		
 		
 		// Do physics simulation
 		dynamicsWorld.stepSimulation(1.f / 60.f, 10);
@@ -146,27 +133,29 @@ public class SpheresVsCubes extends PApplet {
 		int numManifolds = dynamicsWorld.getDispatcher().getNumManifolds();
 		for (int i = 0; i < numManifolds; i++) {
 			PersistentManifold contactManifold = dynamicsWorld.getDispatcher().getManifoldByIndexInternal(i);
-			CollisionObject obA = (CollisionObject) contactManifold.getBody0();
-			CollisionObject obB = (CollisionObject) contactManifold.getBody1();
-		
-			int numContacts = contactManifold.getNumContacts();
-			for (int j=0;j<numContacts;j++)
-			{
-				ManifoldPoint pt = contactManifold.getContactPoint(j);
-				if (pt.getDistance()<0.f)
+			if (contactManifold != null) {
+				CollisionObject obA = (CollisionObject) contactManifold.getBody0();
+				CollisionObject obB = (CollisionObject) contactManifold.getBody1();
+			
+				int numContacts = contactManifold.getNumContacts();
+				for (int j=0;j<numContacts;j++)
 				{
-					pt.getPositionWorldOnA(ptA);
-					pt.getPositionWorldOnB(ptB);
-					Vector3f normalOnB = pt.normalWorldOnB;
-					
-					RigidBody bodyA = RigidBody.upcast(obA);
-					RigidBody bodyB = RigidBody.upcast(obB);
-					
-					PObject pobA = (PObject) bodyA.getUserPointer();
-					PObject pobB = (PObject) bodyB.getUserPointer();
-					
-					pobA.onCollision(pobB);
-					pobB.onCollision(pobA);
+					ManifoldPoint pt = contactManifold.getContactPoint(j);
+					if (pt.getDistance()<0.f)
+					{
+						pt.getPositionWorldOnA(ptA);
+						pt.getPositionWorldOnB(ptB);
+						Vector3f normalOnB = pt.normalWorldOnB;
+						
+						RigidBody bodyA = RigidBody.upcast(obA);
+						RigidBody bodyB = RigidBody.upcast(obB);
+						
+						PObject pobA = (PObject) bodyA.getUserPointer();
+						PObject pobB = (PObject) bodyB.getUserPointer();
+						
+						pobA.onCollision(pobB);
+						pobB.onCollision(pobA);
+					}
 				}
 			}
 		}

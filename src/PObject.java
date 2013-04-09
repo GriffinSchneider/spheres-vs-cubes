@@ -1,4 +1,4 @@
-package Objects;
+
 import java.awt.Color;
 
 import javax.vecmath.Quat4f;
@@ -10,24 +10,18 @@ import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 
-import processing.core.PApplet;
-
 
 public abstract class PObject {
 	public static float GRAPHICS_UNITS_PER_PHYSICS_UNITS = 50.0f;
 	
-	protected PApplet applet;
+	protected SpheresVsCubes applet;
 	public RigidBody body;
 	private Transform trans;
-	protected Vector3f pos;
-	protected float mass;
 	public Color color;
 	
-	PObject(Vector3f pos_, float mass_, Color color_, PApplet applet_) {
+	PObject(Color color_, SpheresVsCubes applet_) {
 		applet = applet_;
 		trans = new Transform();
-		pos = pos_;
-		mass = mass_;
 		color = color_;
 	}
 	
@@ -40,12 +34,13 @@ public abstract class PObject {
 	public Vector3f getGraphicsPos() {
 		Vector3f tmp = this.getPhysicsPos();
 		tmp.scale(GRAPHICS_UNITS_PER_PHYSICS_UNITS);
+		tmp.y = -tmp.y;
 		return tmp;
 	}
 	
 	public abstract void onCollision(PObject object);
 	
-	protected void addShape(CollisionShape shape) {
+	protected void addShape(Vector3f pos, float mass,  CollisionShape shape) {
 		trans.setIdentity();
 		Vector3f physicsPos = new Vector3f(pos);
 		physicsPos.scale(1.0f / GRAPHICS_UNITS_PER_PHYSICS_UNITS);
@@ -66,6 +61,7 @@ public abstract class PObject {
 		RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, shape, localInertia);
 		body = new RigidBody(rbInfo);
 		body.setUserPointer(this);
+		applet.dynamicsWorld.addRigidBody(body);
 	}
 	
 	// From http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/
@@ -88,9 +84,7 @@ public abstract class PObject {
 	}
 	
 	public void visit() {
-		body.activate();
 		update();
-		
 		body.getMotionState().getWorldTransform(trans);
 		
 		applet.pushMatrix();
@@ -105,4 +99,10 @@ public abstract class PObject {
 	
 	public abstract void draw();
 	public abstract void update();
+	
+	public void remove() {
+		if (this.body.isInWorld()) {
+			this.applet.dynamicsWorld.removeRigidBody(this.body);
+		}
+	}
 }

@@ -1,20 +1,18 @@
-package Objects;
+
 import java.awt.Color;
 
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.collision.shapes.BoxShape;
 
-import processing.core.PApplet;
-
 
 public class Box extends PObject {
 	private Vector3f dim;
 	
-	public Box(Vector3f pos_, Vector3f dim_, float mass_, Color color_, PApplet applet_) {
-		super(pos_, mass_, color_, applet_);
+	public Box(Vector3f pos, Vector3f dim_, float mass, Color color_, SpheresVsCubes applet_) {
+		super(color_, applet_);
 		dim = dim_;
-		addShape(new BoxShape(new Vector3f(
+		addShape(pos, mass, new BoxShape(new Vector3f(
 				dim.x / (2*GRAPHICS_UNITS_PER_PHYSICS_UNITS), 
 				dim.y / (2*GRAPHICS_UNITS_PER_PHYSICS_UNITS), 
 				dim.z / (2*GRAPHICS_UNITS_PER_PHYSICS_UNITS))));

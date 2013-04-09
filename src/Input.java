@@ -1,4 +1,4 @@
-package Utils;
+
 
 public class Input {
 	private static boolean[] keys = new boolean[526];
