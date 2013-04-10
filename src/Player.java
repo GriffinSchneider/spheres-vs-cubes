@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import processing.core.PApplet;
 
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;

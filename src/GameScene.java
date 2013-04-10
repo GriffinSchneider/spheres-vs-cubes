@@ -1,8 +1,7 @@
-import java.awt.AWTException;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.vecmath.Vector3f;
 
@@ -23,8 +22,8 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 public class GameScene extends Scene {
 
 	public static final float WORLD_GRAVITY = 500f / PObject.GRAPHICS_UNITS_PER_PHYSICS_UNITS;
-	public static final float CAMERA_DISTANCE = 100f;
 	
+	public  float cameraDistance = 100f;
 	private Player player;
 	private int lastMouseX = -1;
 	private int lastMouseY = -1;
@@ -40,6 +39,11 @@ public class GameScene extends Scene {
 		applet.strokeWeight(1f);  // Default
 		initPhysics(); 
 		applet.noCursor();
+		applet.addMouseWheelListener(new MouseWheelListener() {
+			public void mouseWheelMoved(MouseWheelEvent mwe) {
+				mouseWheel(mwe.getWheelRotation());
+			}
+		});
 	}
 
 	public void initPhysics() {
@@ -55,8 +59,8 @@ public class GameScene extends Scene {
 		// within these boundaries
 		// Don't make the world AABB size too large, it will harm simulation
 		// quality and performance
-		Vector3f worldAabbMin = new Vector3f(-5000, -5000, -5000);
-		Vector3f worldAabbMax = new Vector3f(5000, 5000, 5000);
+		Vector3f worldAabbMin = new Vector3f(-50000, -50000, -50000);
+		Vector3f worldAabbMax = new Vector3f(50000, 50000, 50000);
 		int maxProxies = 150;
 		AxisSweep3 overlappingPairCache = new AxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
@@ -98,6 +102,13 @@ public class GameScene extends Scene {
 			checkCollisions();
 		}
 		
+		if (Input.checkKey(KeyEvent.VK_EQUALS)) {
+			cameraDistance -= 5;
+		} else if (Input.checkKey(KeyEvent.VK_MINUS)) {
+			cameraDistance += 5;
+		}
+		if (cameraDistance < 0) cameraDistance = 0;
+		
 		applet.background(0, 0, 0);
 		applet.translate(applet.width / 2f, applet.height / 2f, 0);
 		
@@ -115,9 +126,9 @@ public class GameScene extends Scene {
 		
 		// Convert our spherical coordinates (vertical + horizontal rotation) to Cartesian coordinates
 		// to find the camera eye position
-		applet.camera(playerPos.x + CAMERA_DISTANCE * PApplet.sin(playerVerticalRotation) * PApplet.cos(playerHorizontalRotation),
-			   -(playerPos.y + CAMERA_DISTANCE * PApplet.cos(playerVerticalRotation)),
-			   playerPos.z + CAMERA_DISTANCE * PApplet.sin(playerVerticalRotation) * PApplet.sin(playerHorizontalRotation), 
+		applet.camera(playerPos.x + cameraDistance * PApplet.sin(playerVerticalRotation) * PApplet.cos(playerHorizontalRotation),
+			   -(playerPos.y + cameraDistance * PApplet.cos(playerVerticalRotation)),
+			   playerPos.z + cameraDistance * PApplet.sin(playerVerticalRotation) * PApplet.sin(playerHorizontalRotation), 
 			   playerPos.x, 
 			   -playerPos.y, 
 			   playerPos.z, 
@@ -186,6 +197,10 @@ public class GameScene extends Scene {
 		} else if (keyCode == KeyEvent.VK_R) {
 			this.player.placeRectangle();
 		}
+	}
+	
+	void mouseWheel(int delta) {
+		this.cameraDistance += delta;
 	}
 	
 	@Override

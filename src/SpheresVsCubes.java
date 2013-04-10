@@ -21,7 +21,11 @@ public class SpheresVsCubes extends PApplet {
 	
     @Override
 	public void setup() {
-		size(800, 600, P3D);
+    	if (sketchFullScreen()) {
+    		size(displayWidth, displayHeight, P3D);
+    	} else {
+    		size(800, 600, P3D);
+    	}
 		lights();
 		
 		nextScene = new MenuScene(this);
@@ -59,6 +63,9 @@ public class SpheresVsCubes extends PApplet {
 		currentScene.mouseMoved(mouseX, mouseY);
 	}
 	
+	public boolean sketchFullScreen() {
+		return false;
+	}
 	@Override
 	public void keyPressed() {
 		currentScene.keyPressed(keyCode);
