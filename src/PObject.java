@@ -12,16 +12,15 @@ import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
 
 
-public abstract class PObject {
+public abstract class PObject extends Node {
 	public static float GRAPHICS_UNITS_PER_PHYSICS_UNITS = 50.0f;
 	
-	protected SpheresVsCubes applet;
 	public RigidBody body;
 	private Transform trans;
 	public Color color;
 	
 	PObject(Color color_, SpheresVsCubes applet_) {
-		applet = applet_;
+		super(applet_);
 		trans = new Transform();
 		color = color_;
 	}
@@ -62,7 +61,7 @@ public abstract class PObject {
 		RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, shape, localInertia);
 		body = new RigidBody(rbInfo);
 		body.setUserPointer(this);
-		applet.dynamicsWorld.addRigidBody(body);
+		GameScene.dynamicsWorld.addRigidBody(body);
 	}
 
 	public void visit() {
@@ -87,7 +86,7 @@ public abstract class PObject {
 	
 	public void remove() {
 		if (this.body.isInWorld()) {
-			this.applet.dynamicsWorld.removeRigidBody(this.body);
+			GameScene.dynamicsWorld.removeRigidBody(this.body);
 		}
 	}
 }

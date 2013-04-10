@@ -21,7 +21,7 @@ public class Enemy extends Box {
 			
 			Vector3f pos = getGraphicsPos();
 			
-			Vector3f norm = applet.player.getGraphicsPos();
+			Vector3f norm = GameScene.player.getGraphicsPos();
 			norm.sub(pos);
 			norm.normalize();
 			
