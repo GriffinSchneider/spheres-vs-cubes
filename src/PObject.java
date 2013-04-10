@@ -44,10 +44,10 @@ public abstract class PObject extends Node {
 	public abstract void onCollision(PObject object);
 	
 	protected void addShape(Vector3f pos, float mass, CollisionShape shape) {
-		this.addShape(pos, mass, shape, 0, new Vector3f(0, 1, 0));
+		this.addShape(pos, mass, shape, 0, 0);
 	}
 	
-	protected void addShape(Vector3f pos, float mass, CollisionShape shape, float rotationAngle, Vector3f rotationAxis) {
+	protected void addShape(Vector3f pos, float mass, CollisionShape shape, float horizontalRotation, float verticalRotation) {
 		trans.setIdentity();
 		Vector3f physicsPos = new Vector3f(pos);
 		physicsPos.scale(1.0f / GRAPHICS_UNITS_PER_PHYSICS_UNITS);
@@ -61,11 +61,20 @@ public abstract class PObject extends Node {
 		if (isDynamic) {
 			shape.calculateLocalInertia(mass, localInertia);
 		}
-		
-    	Quat4f q = new Quat4f();
-    	QuaternionUtil.setRotation(q, rotationAxis, rotationAngle);
-    	trans.setRotation(q);
 
+    	Quat4f q = new Quat4f();
+    	Transform t = new Transform();
+    	
+    	
+    	QuaternionUtil.setRotation(q, new Vector3f(0, 1, 0), horizontalRotation);
+    	t.setRotation(q);
+    	trans.mul(t);
+    	
+   		QuaternionUtil.setRotation(q, new Vector3f(0, 0, -1), verticalRotation);    		
+    	
+    	t.setRotation(q);
+    	trans.mul(t);
+    	
 		// using motionstate is recommended, it provides interpolation
 		// capabilities, and only synchronizes 'active' objects
 		DefaultMotionState myMotionState = new DefaultMotionState(trans);

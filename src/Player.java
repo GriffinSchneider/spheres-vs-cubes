@@ -6,8 +6,9 @@ import java.awt.event.KeyEvent;
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
-
 import processing.core.PApplet;
+
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 
 
 public class Player extends Sphere {
@@ -24,25 +25,30 @@ public class Player extends Sphere {
     // Magnitude of impulse in the y-direction to apply to make the player "jump"
     public static final float PLAYER_JUMP_IMPULSE = 200 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
 	
-	private float rotation;
+	private float horizontalRotation;
+	private float verticalRotation;
 	private boolean canJump;
 	private Vector3f editorModeMovementOffset;
 	
 	public Player(Vector3f pos_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_) {
 		super(pos_, PLAYER_INITIAL_RADIUS, 2, Color.GREEN, world_, applet_);
-		rotation = 0;
+		horizontalRotation = 0;
 		body.setFriction(0.8f);
 		canJump = false;
 	}
 	
-	public float getRotation() {
-		return rotation;
+	public float getHorizontalRotation() {
+		return horizontalRotation;
+	}
+	
+	public float getVerticalRotation() {
+		return verticalRotation;
 	}
 
 	// In editor mode, we must update the position without
-		// updating the real physics position until we exit editor mode
-		// (since the physics position of a body won't actually change until
-		// we step the simulation)
+	// updating the real physics position until we exit editor mode
+	// (since the physics position of a body won't actually change until
+	// we step the simulation)
 	@Override 
 	public Vector3f getPhysicsPos() {
 		Vector3f physicsPos = super.getPhysicsPos();
@@ -73,18 +79,29 @@ public class Player extends Sphere {
 	
 	@Override
 	public void update() {
-        // Rotate the player
+        // Rotate the player horizontally
         if (Input.checkKey(KeyEvent.VK_A) || Input.checkKey(PApplet.LEFT)) {
-            rotation -= PApplet.radians(3);
+            horizontalRotation -= PApplet.radians(3);
+        } else if (Input.checkKey(KeyEvent.VK_D) || Input.checkKey(PApplet.RIGHT)) {
+            horizontalRotation += PApplet.radians(3);
         }
-        else if (Input.checkKey(KeyEvent.VK_D) || Input.checkKey(PApplet.RIGHT)) {
-            rotation += PApplet.radians(3);
+        
+        // Rotate the player up/down
+        if (Input.checkKey(KeyEvent.VK_Z)) {
+        	verticalRotation -= PApplet.radians(3);
+        } else if (Input.checkKey(KeyEvent.VK_X)) {
+        	verticalRotation += PApplet.radians(3);
         }
+        
+        // Clamp vertical rotation so you can't look past 'all the way' up or down.
+        // Letting the angle actually get to pi or 0 breaks stuff.
+        if (verticalRotation > Math.PI - 0.001f) verticalRotation = (float)Math.PI - 0.001f;
+        if (verticalRotation < 0.001f) verticalRotation = 0.001f;
 
         boolean isForwardPressed  = Input.checkKey(KeyEvent.VK_W) || Input.checkKey(PApplet.UP);
         boolean isBackwardPressed = Input.checkKey(KeyEvent.VK_S) || Input.checkKey(PApplet.DOWN);
-        float movementImpulseX = PApplet.cos(this.rotation) * PLAYER_MOVEMENT_IMPULSE; 
-        float movementImpulseZ = PApplet.sin(this.rotation) * PLAYER_MOVEMENT_IMPULSE;
+        float movementImpulseX = PApplet.cos(this.horizontalRotation) * PLAYER_MOVEMENT_IMPULSE; 
+        float movementImpulseZ = PApplet.sin(this.horizontalRotation) * PLAYER_MOVEMENT_IMPULSE;
         
         if (applet.isEditorMode) {
         	// Move forward/backward
@@ -144,11 +161,11 @@ public class Player extends Sphere {
 	public void placeRectangle() {
 		if (applet.isEditorMode) {
 			Vector3f pos = getGraphicsPos();
-	    	pos.add(new Vector3f(-PApplet.cos(this.rotation)*20, 0, -PApplet.sin(this.rotation)*20));
+	    	pos.add(new Vector3f(-PApplet.cos(this.horizontalRotation)*20, 0, -PApplet.sin(this.horizontalRotation)*20));
 	    	Box b = new Box(pos, 
 		        			new Vector3f(5, 200, 200),
-		        			(float) (-rotation),
-		        			new Vector3f(0, 1, 0),
+		        			-horizontalRotation,
+		        			verticalRotation - (float)Math.PI/2,
 		        			0, 
 		        			Color.GREEN,
 		        			this.world,

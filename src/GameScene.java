@@ -20,6 +20,7 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 public class GameScene extends Scene {
 
 	public static final float WORLD_GRAVITY = 500f / PObject.GRAPHICS_UNITS_PER_PHYSICS_UNITS;
+	public static final float CAMERA_DISTANCE = 100f;
 	
 	private Player player;
 	
@@ -100,13 +101,17 @@ public class GameScene extends Scene {
 		}
 		
 		Vector3f playerPos = player.getGraphicsPos();
-		float playerRotation= player.getRotation();
+		float playerHorizontalRotation = player.getHorizontalRotation();
+		float playerVerticalRotation = player.getVerticalRotation();
 		
-		// applet.perspective(PApplet.radians(60), applet.width / applet.height, 0.01f, 5000);
-		// applet.ortho(0, width, 0, height, -1000, 1000); // This looks really cool
-		applet.camera(playerPos.x + 100 * PApplet.cos(playerRotation), 
-			   -(playerPos.y + 50), 
-			   playerPos.z + 100 * PApplet.sin(playerRotation), 
+//		applet.perspective(PApplet.radians(60), applet.width / applet.height, 0.01f, 5000);
+		applet.ortho(0, applet.width, 0, applet.height, -1000, 1000); // This looks really cool
+		
+		// Convert our spherical coordinates (vertical + horizontal rotation) to Cartesian coordinates
+		// to find the camera eye position
+		applet.camera(playerPos.x + CAMERA_DISTANCE * PApplet.sin(playerVerticalRotation) * PApplet.cos(playerHorizontalRotation),
+			   -(playerPos.y + CAMERA_DISTANCE * PApplet.cos(playerVerticalRotation)),
+			   playerPos.z + CAMERA_DISTANCE * PApplet.sin(playerVerticalRotation) * PApplet.sin(playerHorizontalRotation), 
 			   playerPos.x, 
 			   -playerPos.y, 
 			   playerPos.z, 
