@@ -7,10 +7,12 @@ public abstract class Scene extends Node {
     
     public abstract void init();
     
+    @Override
     public void draw() {
         Button.displayButtons();
     }
     
+    @Override
     public void update() {
         Button.updateButtons();
     }

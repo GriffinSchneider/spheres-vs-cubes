@@ -93,9 +93,6 @@ public abstract class PObject extends Node {
 		applet.popMatrix();
 	}
 	
-	public abstract void draw();
-	public abstract void update();
-	
 	public void remove() {
 		if (this.body.isInWorld()) {
 			world.removeRigidBody(this.body);

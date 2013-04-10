@@ -14,18 +14,16 @@ public class Button extends Node {
         buttonList.clear();
     }
     
-    public static boolean updateButtons() {
+    public static void updateButtons() {
         for (int i = buttonList.size()-1; i >=0; i--) {
-            Button b = buttonList.get(i);
-            if (b.update()) return true;
+            buttonList.get(i).update();
         }
-        return false;
     }
     
     public static void displayButtons() {
         for (int i = buttonList.size()-1; i >=0; i--) {
             Button b = buttonList.get(i);
-            b.display();
+            b.draw();
         }
     }
     
@@ -76,7 +74,7 @@ public class Button extends Node {
         buttonList.add(this);
     }
 
-    public void display() {
+    public void draw() {
         applet.pushStyle();
         
         if (this.isDown) applet.fill(this.fillDown.getRGB());
@@ -94,10 +92,8 @@ public class Button extends Node {
         applet.popStyle();
     }
 
-    public boolean update() {
+    public void update() {
         if (!isCheckbox) this.isDown = false;
-        
-        boolean wasClicked = false;
         
         if (Input.isMouseClicked()) {
             if(applet.mouseX > pos.x && applet.mouseX <pos.x+w && 
@@ -105,7 +101,6 @@ public class Button extends Node {
                 if (!this.isDown && this.isCheckbox) Button.uncheckButtons();
                 
                 this.isDown = !this.isDown;
-                wasClicked = true;
                 
                 try {
                     callback.isDown = this.isDown;
@@ -115,8 +110,6 @@ public class Button extends Node {
                 }
             }
         }
-        
-        return wasClicked;
     }
     
     public boolean isDown() {

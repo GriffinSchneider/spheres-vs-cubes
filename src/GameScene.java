@@ -102,9 +102,8 @@ public class GameScene extends Scene {
 		Vector3f playerPos = player.getGraphicsPos();
 		float playerRotation= player.getRotation();
 		
-		applet.perspective(PApplet.radians(60), applet.width / applet.height, 0.01f, 5000);
-		
-//		applet.ortho(0, applet.width, 0, applet.height, -1000, 1000); // This looks really cool
+		// applet.perspective(PApplet.radians(60), applet.width / applet.height, 0.01f, 5000);
+		// applet.ortho(0, width, 0, height, -1000, 1000); // This looks really cool
 		applet.camera(playerPos.x + 100 * PApplet.cos(playerRotation), 
 			   -(playerPos.y + 50), 
 			   playerPos.z + 100 * PApplet.sin(playerRotation), 

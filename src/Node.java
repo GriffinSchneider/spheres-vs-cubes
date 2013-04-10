@@ -5,4 +5,7 @@ public abstract class Node {
 	public Node(SpheresVsCubes applet_) {
 		applet = applet_;
 	}
+	
+	public abstract void draw();
+	public abstract void update();
 }
