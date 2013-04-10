@@ -24,6 +24,7 @@ public class MenuScene extends Scene {
 
     @Override
     public void init() {
+    	applet.camera();
     	background = new PhysicsBackground(applet);
     	
         Button playButton = Button.createButton(new Vector2f(applet.width/2 - 50, applet.height/2), 100, 30, new ButtonCallback() {

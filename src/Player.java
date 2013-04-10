@@ -50,7 +50,14 @@ public class Player extends Sphere {
 			physicsPos.add(editorModeMovementOffset);
 		}
 		return physicsPos;
-		
+	}
+	
+	@Override
+	public void setRadius(float radius_) {
+		super.setRadius(radius_);
+		if (radius_ <= 0) {
+			applet.changeScene(new MenuScene(applet));
+		}
 	}
 
 	@Override
