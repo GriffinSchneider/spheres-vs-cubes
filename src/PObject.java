@@ -41,6 +41,17 @@ public abstract class PObject extends Node {
 		return tmp;
 	}
 	
+	public void setGraphicsPos(Vector3f pos) {
+		Vector3f tmp = new Vector3f(pos);
+		tmp.scale(1f / GRAPHICS_UNITS_PER_PHYSICS_UNITS);
+		tmp.y = -tmp.y;
+		
+		Transform t = new Transform();
+		t.setIdentity();
+		t.setFromOpenGLMatrix(new float[] {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, tmp.x, tmp.y, tmp.z, 1});
+		body.setCenterOfMassTransform(t);
+	}
+	
 	public abstract void onCollision(PObject object);
 	
 	protected void addShape(Vector3f pos, float mass, CollisionShape shape) {
