@@ -61,7 +61,7 @@ public class GameScene extends Scene {
 		// quality and performance
 		Vector3f worldAabbMin = new Vector3f(-50000, -50000, -50000);
 		Vector3f worldAabbMax = new Vector3f(50000, 50000, 50000);
-		int maxProxies = 150;
+		int maxProxies = 200;
 		AxisSweep3 overlappingPairCache = new AxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
 		// the default constraint solver. For parallel processing you can use a
@@ -90,6 +90,8 @@ public class GameScene extends Scene {
 		new Enemy(player, new Vector3f(150, 150, 100), dynamicsWorld, applet);
 		
 		new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 100, 5000), 0, Color.GRAY, dynamicsWorld, applet);
+		
+		new EndPoint(new Vector3f(100, 50, 100), dynamicsWorld, applet);
     }
 	
 	@Override
@@ -98,7 +100,7 @@ public class GameScene extends Scene {
 		
 		// Do physics simulation
 		if (!applet.isEditorMode) {
-			dynamicsWorld.stepSimulation(1.f / 60.f, 15);
+			dynamicsWorld.stepSimulation(1.f / 60.f, 25);
 			checkCollisions();
 		}
 		
@@ -121,8 +123,8 @@ public class GameScene extends Scene {
 		float playerHorizontalRotation = player.getHorizontalRotation();
 		float playerVerticalRotation = player.getVerticalRotation();
 		
-//		applet.perspective(PApplet.radians(60), applet.width / applet.height, 0.01f, 5000);
-//		applet.ortho(0, applet.width, 0, applet.height, -1000, 1000); // This looks really cool
+		// applet.perspective(PApplet.radians(60), applet.width / applet.height, 0.01f, 5000);
+		// applet.ortho(0, applet.width, 0, applet.height, -1000, 1000); // This looks really cool
 		
 		// Convert our spherical coordinates (vertical + horizontal rotation) to Cartesian coordinates
 		// to find the camera eye position

@@ -11,6 +11,10 @@ import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 
+enum BackgroundType {
+	Menu,
+	Victory
+}
 
 public class PhysicsBackground extends Node {
 	public static final float WORLD_GRAVITY = 500f / PObject.GRAPHICS_UNITS_PER_PHYSICS_UNITS;
@@ -19,13 +23,16 @@ public class PhysicsBackground extends Node {
 	private int count;
 	private DiscreteDynamicsWorld dynamicsWorld;
 	private Sphere sphere;
+	private BackgroundType type;
 	
-	public PhysicsBackground(SpheresVsCubes applet_) {
+	public PhysicsBackground(BackgroundType type_, SpheresVsCubes applet_) {
 		super(applet_);
+		type = type_;
 		count = 0;
 		initPhysics();
+
 		sphere = new Sphere(new Vector3f(applet.width / 2, -applet.height / 2, 0), 
-				Player.PLAYER_INITIAL_RADIUS, 20, Color.GREEN, dynamicsWorld, applet);
+				Player.PLAYER_INITIAL_RADIUS, Player.PLAYER_MASS, Color.GREEN, dynamicsWorld, applet);
 		sphere.body.setGravity(new Vector3f());
 		sphere.body.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
 	}
@@ -61,14 +68,22 @@ public class PhysicsBackground extends Node {
 	@Override
 	public void draw() {
 		applet.background(0, 0, 0);
-		dynamicsWorld.stepSimulation(1.f / 60.f, 10);
+		dynamicsWorld.stepSimulation(1.f / 60.f, 25);
 
 		if (count++ > CREATE_DELAY) {
 			count = 0;
-			new Enemy(sphere, new Vector3f(applet.random(applet.width), 40, 0), dynamicsWorld, applet);
+			if (type == BackgroundType.Victory) {
+				new Sphere(new Vector3f(applet.random(applet.width), 40, 0), 
+						Player.PLAYER_INITIAL_RADIUS, Player.PLAYER_MASS, Color.GREEN, dynamicsWorld, applet);
+			}
+			else {
+				new Enemy(sphere, new Vector3f(applet.random(applet.width), 40, 0), dynamicsWorld, applet);
+			}
 		}
 		
-		sphere.setGraphicsPos(new Vector3f(applet.mouseX, applet.mouseY, 0));
+		if (sphere != null) {
+			sphere.setGraphicsPos(new Vector3f(applet.mouseX, applet.mouseY, 0));
+		}
 		
 		for (int j=dynamicsWorld.getNumCollisionObjects()-1; j>=0; j--) {
 			CollisionObject obj = dynamicsWorld.getCollisionObjectArray().getQuick(j);

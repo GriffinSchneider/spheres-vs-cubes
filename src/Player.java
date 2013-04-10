@@ -23,6 +23,8 @@ public class Player extends Sphere {
     public static final float PLAYER_NO_MOVEMENT_DAMPING = 10 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
     // Magnitude of impulse in the y-direction to apply to make the player "jump"
     public static final float PLAYER_JUMP_IMPULSE = 300 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
+    public static final float PLAYER_JUMP_DELAY = 10;
+    public static final float PLAYER_MASS = 2;
 	
 	private float horizontalRotation = (float)Math.PI/3;
 	private float verticalRotation = (float)Math.PI/4;
@@ -30,7 +32,7 @@ public class Player extends Sphere {
 	private Vector3f editorModeMovementOffset;
 	
 	public Player(Vector3f pos_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_) {
-		super(pos_, PLAYER_INITIAL_RADIUS, 2, Color.GREEN, world_, applet_);
+		super(pos_, PLAYER_INITIAL_RADIUS, PLAYER_MASS, Color.GREEN, world_, applet_);
 		horizontalRotation = 0;
 		body.setFriction(0.8f);
 		canJump = false;
@@ -67,7 +69,10 @@ public class Player extends Sphere {
 
 	@Override
 	public void onCollision(PObject object) {
-		if (object instanceof Bullet) {
+		if (object instanceof EndPoint) {
+			applet.changeScene(new GameOverScene(applet));
+		}
+		else if (object instanceof Bullet) {
 			object.remove();
 			this.setRadius(this.radius - 1);
 		}
