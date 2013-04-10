@@ -5,6 +5,7 @@ import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.linearmath.DefaultMotionState;
@@ -12,16 +13,17 @@ import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
 
 
-public abstract class PObject {
+public abstract class PObject extends Node {
 	public static float GRAPHICS_UNITS_PER_PHYSICS_UNITS = 50.0f;
 	
-	protected SpheresVsCubes applet;
+	protected DiscreteDynamicsWorld world;
 	public RigidBody body;
 	private Transform trans;
 	public Color color;
 	
-	PObject(Color color_, SpheresVsCubes applet_) {
-		applet = applet_;
+	PObject(Color color_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_) {
+		super(applet_);
+		world = world_;
 		trans = new Transform();
 		color = color_;
 	}
@@ -70,7 +72,7 @@ public abstract class PObject {
 		RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, shape, localInertia);
 		body = new RigidBody(rbInfo);
 		body.setUserPointer(this);
-		applet.dynamicsWorld.addRigidBody(body);
+		world.addRigidBody(body);
 	}
 
 	public void visit() {
@@ -96,7 +98,7 @@ public abstract class PObject {
 	
 	public void remove() {
 		if (this.body.isInWorld()) {
-			this.applet.dynamicsWorld.removeRigidBody(this.body);
+			world.removeRigidBody(this.body);
 		}
 	}
 }

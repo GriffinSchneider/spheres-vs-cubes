@@ -4,13 +4,14 @@ import java.awt.Color;
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.collision.shapes.SphereShape;
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 
 
 public class Sphere extends PObject {
 	protected float radius;
 	
-	public Sphere(Vector3f pos, float radius_, float mass, Color color_, SpheresVsCubes applet_) {
-		super(color_, applet_);
+	public Sphere(Vector3f pos, float radius_, float mass, Color color_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_) {
+		super(color_, world_, applet_);
 		radius = radius_;
 		addShape(pos, mass, new SphereShape(radius / GRAPHICS_UNITS_PER_PHYSICS_UNITS));
 	}

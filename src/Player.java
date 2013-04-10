@@ -8,6 +8,7 @@ import javax.vecmath.Vector3f;
 
 import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 
 import processing.core.PApplet;
 
@@ -30,8 +31,8 @@ public class Player extends Sphere {
 	private boolean canJump;
 	private Vector3f editorModeMovementOffset;
 	
-	public Player(Vector3f pos_, SpheresVsCubes applet_) {
-		super(pos_, PLAYER_INITIAL_RADIUS, 2, Color.GREEN, applet_);
+	public Player(Vector3f pos_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_) {
+		super(pos_, PLAYER_INITIAL_RADIUS, 2, Color.GREEN, world_, applet_);
 		rotation = 0;
 		body.setFriction(0.8f);
 		canJump = false;
@@ -145,7 +146,8 @@ public class Player extends Sphere {
 		        			(float) (-rotation),
 		        			new Vector3f(0, 1, 0),
 		        			0, 
-		        			Color.GREEN, 
+		        			Color.GREEN,
+		        			this.world,
 		        			this.applet);
 		}
 	}
