@@ -3,8 +3,10 @@
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
+import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
 
 import processing.core.PApplet;
@@ -80,16 +82,19 @@ public class Player extends Sphere {
         float movementImpulseZ = PApplet.sin(this.rotation) * PLAYER_MOVEMENT_IMPULSE;
         
         if (applet.isEditorMode) {
+        	// Move forward/backward
             if (isForwardPressed) {
             	this.editorModeMovementOffset.add(new Vector3f(-0.3f*movementImpulseX, 0, -0.3f*movementImpulseZ));
             } else if (isBackwardPressed) {
             	this.editorModeMovementOffset.add(new Vector3f(0.3f*movementImpulseX, 0, 0.3f*movementImpulseZ));
             }
+            // Move up/down
             if (Input.checkKey(KeyEvent.VK_SPACE)) {
             	this.editorModeMovementOffset.add(new Vector3f(0, -PLAYER_MOVEMENT_IMPULSE*0.3f, 0));
             } else if (Input.checkKey(KeyEvent.VK_BACK_SPACE)) {
             	this.editorModeMovementOffset.add(new Vector3f(0, PLAYER_MOVEMENT_IMPULSE*0.3f, 0));
             }
+
         } else {
             // Move the player
             Vector3f currentVelocity = body.getLinearVelocity(new Vector3f());
@@ -116,6 +121,8 @@ public class Player extends Sphere {
         }
 	}
 	
+	// Hack: these methods get called from keyPressed, since we only
+	// want them to happen once when the key is pressed down.
 	public void toggleEditorMode() {
 		if (!this.applet.isEditorMode) {
 			this.applet.isEditorMode = true;
@@ -125,6 +132,21 @@ public class Player extends Sphere {
 			editorModeMovementOffset.y = -editorModeMovementOffset.y;
 			this.body.translate(editorModeMovementOffset);
 			this.editorModeMovementOffset = null;
+		}
+	}
+	
+	// Place rectangle slightly in front of the player if editing
+	public void placeRectangle() {
+		if (applet.isEditorMode) {
+			Vector3f pos = getGraphicsPos();
+	    	pos.add(new Vector3f(-PApplet.cos(this.rotation)*20, 0, -PApplet.sin(this.rotation)*20));
+	    	Box b = new Box(pos, 
+		        			new Vector3f(5, 200, 200),
+		        			(float) (-rotation),
+		        			new Vector3f(0, 1, 0),
+		        			0, 
+		        			Color.GREEN, 
+		        			this.applet);
 		}
 	}
 }

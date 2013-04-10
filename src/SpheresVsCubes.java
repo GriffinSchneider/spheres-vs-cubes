@@ -169,6 +169,8 @@ public class SpheresVsCubes extends PApplet {
 	public void keyPressed() {
 		if (keyCode == KeyEvent.VK_E) {
 			this.player.toggleEditorMode();
+		} else if (keyCode == KeyEvent.VK_R) {
+			this.player.placeRectangle();
 		}
 		Input.keyPressed(keyCode);
 	}

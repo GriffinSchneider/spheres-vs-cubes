@@ -41,7 +41,11 @@ public abstract class PObject {
 	
 	public abstract void onCollision(PObject object);
 	
-	protected void addShape(Vector3f pos, float mass,  CollisionShape shape) {
+	protected void addShape(Vector3f pos, float mass, CollisionShape shape) {
+		this.addShape(pos, mass, shape, 0, new Vector3f(0, 1, 0));
+	}
+	
+	protected void addShape(Vector3f pos, float mass, CollisionShape shape, float rotationAngle, Vector3f rotationAxis) {
 		trans.setIdentity();
 		Vector3f physicsPos = new Vector3f(pos);
 		physicsPos.scale(1.0f / GRAPHICS_UNITS_PER_PHYSICS_UNITS);
@@ -55,6 +59,10 @@ public abstract class PObject {
 		if (isDynamic) {
 			shape.calculateLocalInertia(mass, localInertia);
 		}
+		
+    	Quat4f q = new Quat4f();
+    	QuaternionUtil.setRotation(q, rotationAxis, rotationAngle);
+    	trans.setRotation(q);
 
 		// using motionstate is recommended, it provides interpolation
 		// capabilities, and only synchronizes 'active' objects
@@ -66,6 +74,7 @@ public abstract class PObject {
 	}
 
 	public void visit() {
+		body.activate();
 		update();
 		body.getMotionState().getWorldTransform(trans);
 		
