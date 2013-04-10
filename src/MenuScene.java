@@ -1,4 +1,6 @@
 
+import java.awt.Color;
+
 import javax.vecmath.Vector2f;
 
 import processing.core.PConstants;
@@ -27,12 +29,13 @@ public class MenuScene extends Scene {
     	applet.camera();
     	background = new PhysicsBackground(applet);
     	
-        Button playButton = Button.createButton(new Vector2f(applet.width/2 - 50, applet.height/2), 100, 30, new ButtonCallback() {
+        Button playButton = Button.createButton(new Vector2f(applet.width/2 - 50, applet.height/2 + 50), 100, 30, new ButtonCallback() {
             @Override
             public void call() {
             	applet.changeScene(new GameScene(applet));
             }
         }, applet);
+        playButton.fill = Color.GREEN;
         playButton.text = "Play";
     }
 }
