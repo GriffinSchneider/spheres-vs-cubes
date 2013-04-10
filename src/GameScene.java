@@ -105,7 +105,7 @@ public class GameScene extends Scene {
 		float playerVerticalRotation = player.getVerticalRotation();
 		
 //		applet.perspective(PApplet.radians(60), applet.width / applet.height, 0.01f, 5000);
-		applet.ortho(0, applet.width, 0, applet.height, -1000, 1000); // This looks really cool
+//		applet.ortho(0, applet.width, 0, applet.height, -1000, 1000); // This looks really cool
 		
 		// Convert our spherical coordinates (vertical + horizontal rotation) to Cartesian coordinates
 		// to find the camera eye position
