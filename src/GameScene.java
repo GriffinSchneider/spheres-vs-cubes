@@ -23,7 +23,7 @@ public class GameScene extends Scene {
 	
 	private Player player;
 	
-	public static DiscreteDynamicsWorld dynamicsWorld;
+	private DiscreteDynamicsWorld dynamicsWorld;
 	
 	public GameScene(SpheresVsCubes applet_) {
 		super(applet_);
@@ -60,25 +60,25 @@ public class GameScene extends Scene {
 		dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 		dynamicsWorld.setGravity(new Vector3f(0, -WORLD_GRAVITY, 0));
 
-		player = new Player(new Vector3f(0, 250, 0), applet);
+		player = new Player(new Vector3f(0, 250, 0), dynamicsWorld, applet);
 		
-		new Box(new Vector3f(), new Vector3f(150, 5, 450), 0, Color.GRAY, applet);
+		new Box(new Vector3f(), new Vector3f(150, 5, 450), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(200, 0, 0), new Vector3f(150, 5, 450), 0, Color.GRAY, applet);
+		new Box(new Vector3f(200, 0, 0), new Vector3f(150, 5, 450), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(0, 100, 0), new Vector3f(150, 5, 150), 0, Color.GRAY, applet);
+		new Box(new Vector3f(0, 100, 0), new Vector3f(150, 5, 150), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(-50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, applet);
+		new Box(new Vector3f(-50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, applet);
+		new Box(new Vector3f(50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Enemy(player, new Vector3f(0, 150, 0), applet);
+		new Enemy(player, new Vector3f(0, 150, 0), dynamicsWorld, applet);
 	
-		new Enemy(player, new Vector3f(150, 150, 0), applet);
+		new Enemy(player, new Vector3f(150, 150, 0), dynamicsWorld, applet);
 
-		new Enemy(player, new Vector3f(150, 150, 100), applet);
+		new Enemy(player, new Vector3f(150, 150, 100), dynamicsWorld, applet);
 		
-		new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 10, 5000), 0, Color.GRAY, applet);
+		new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 10, 5000), 0, Color.GRAY, dynamicsWorld, applet);
     }
 	
 	@Override

@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 
 import javax.vecmath.Vector3f;
 
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+
 import processing.core.PApplet;
 
 
@@ -26,8 +28,8 @@ public class Player extends Sphere {
 	private boolean canJump;
 	private Vector3f editorModeMovementOffset;
 	
-	public Player(Vector3f pos_, SpheresVsCubes applet_) {
-		super(pos_, PLAYER_INITIAL_RADIUS, 2, Color.GREEN, applet_);
+	public Player(Vector3f pos_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_) {
+		super(pos_, PLAYER_INITIAL_RADIUS, 2, Color.GREEN, world_, applet_);
 		rotation = 0;
 		body.setFriction(0.8f);
 		canJump = false;

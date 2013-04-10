@@ -4,13 +4,14 @@ import java.awt.Color;
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.collision.shapes.BoxShape;
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 
 
 public class Box extends PObject {
 	protected Vector3f dim;
 	
-	public Box(Vector3f pos, Vector3f dim_, float mass, Color color_, SpheresVsCubes applet_) {
-		super(color_, applet_);
+	public Box(Vector3f pos, Vector3f dim_, float mass, Color color_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_) {
+		super(color_, world_, applet_);
 		dim = dim_;
 		addShape(pos, mass, new BoxShape(new Vector3f(
 				dim.x / (2*GRAPHICS_UNITS_PER_PHYSICS_UNITS), 

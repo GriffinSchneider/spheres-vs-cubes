@@ -4,14 +4,16 @@ import java.awt.Color;
 
 import javax.vecmath.Vector3f;
 
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+
 public class Enemy extends Box {
 	private static final int BULLET_SPEED = 5;
 	private static final int SHOT_DELAY = 50;
 	private int count;
 	private PObject target;
 	
-	public Enemy(PObject target_, Vector3f pos_, SpheresVsCubes applet_) {
-		super(pos_, new Vector3f(20, 20, 20), 2, Color.RED, applet_);
+	public Enemy(PObject target_, Vector3f pos_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_) {
+		super(pos_, new Vector3f(20, 20, 20), 2, Color.RED, world_, applet_);
 		target = target_;
 		count = 0;
 	}
@@ -31,7 +33,7 @@ public class Enemy extends Box {
 				Vector3f bulletPos = new Vector3f(norm.x * dim.x, norm.y * dim.y + dim.y / 2, norm.z * dim.z);
 				bulletPos.add(pos);
 				
-				Bullet bullet = new Bullet(bulletPos, applet);
+				Bullet bullet = new Bullet(bulletPos, world, applet);
 				
 				Vector3f impulse = new Vector3f(norm);
 				impulse.scale(BULLET_SPEED);
