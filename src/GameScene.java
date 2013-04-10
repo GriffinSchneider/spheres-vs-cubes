@@ -85,6 +85,12 @@ public class GameScene extends Scene {
 	public void draw() {
 		super.draw();
 		
+		// Do physics simulation
+		if (!applet.isEditorMode) {
+			dynamicsWorld.stepSimulation(1.f / 60.f, 10);
+			checkCollisions();
+		}
+		
 		applet.background(0, 0, 0);
 		applet.translate(applet.width / 2f, applet.height / 2f, 0);
 		
@@ -106,12 +112,7 @@ public class GameScene extends Scene {
 			   -playerPos.y, 
 			   playerPos.z, 
 			   0, 1, 0);
-		
-		// Do physics simulation
-		if (!applet.isEditorMode) {
-			dynamicsWorld.stepSimulation(1.f / 60.f, 10);
-			checkCollisions();
-		}
+
 		for (int j=dynamicsWorld.getNumCollisionObjects()-1; j>=0; j--) {
 			CollisionObject obj = dynamicsWorld.getCollisionObjectArray().getQuick(j);
 			
