@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -30,7 +31,8 @@ public class SpheresVsCubes extends PApplet {
 		PApplet.main(new String[] { "SpheresVsCubes" });
 	}
 	
-	Player player;
+	public Player player;
+    public boolean isEditorMode = false;
    
     @Override
 	public void setup() {
@@ -96,12 +98,18 @@ public class SpheresVsCubes extends PApplet {
 			System.out.println("" + frameRate + " FPS");
 		}
 		
+		if (!this.isEditorMode) {
+			// Do physics simulation
+			dynamicsWorld.stepSimulation(1.f / 60.f, 10);
+			checkCollisions();
+		}
+		
 		Vector3f playerPos = player.getGraphicsPos();
 		float playerRotation= player.getRotation();
 		
-		perspective(radians(60), width / height, 0.01f, 5000);
+		// perspective(radians(60), width / height, 0.01f, 5000);
 		
-		//ortho(0, width, 0, height, -1000, 1000); // This looks really cool
+		// ortho(0, width, 0, height, -1000, 1000); // This looks really cool
 		camera(playerPos.x + 100*cos(playerRotation), 
 			   -(playerPos.y + 50), 
 			   playerPos.z + 100*sin(playerRotation), 
@@ -110,8 +118,6 @@ public class SpheresVsCubes extends PApplet {
 			   playerPos.z, 
 			   0, 1, 0);
 		
-		// Do physics simulation
-		dynamicsWorld.stepSimulation(1.f / 60.f, 10);
 		for (int j=dynamicsWorld.getNumCollisionObjects()-1; j>=0; j--) {
 			CollisionObject obj = dynamicsWorld.getCollisionObjectArray().getQuick(j);
 			
@@ -123,8 +129,6 @@ public class SpheresVsCubes extends PApplet {
 				}
 			}
 		}
-		
-		checkCollisions();
 	}
 	
 	public void checkCollisions() {
@@ -163,6 +167,9 @@ public class SpheresVsCubes extends PApplet {
 	
 	@Override
 	public void keyPressed() {
+		if (keyCode == KeyEvent.VK_E) {
+			this.player.toggleEditorMode();
+		}
 		Input.keyPressed(keyCode);
 	}
 

@@ -88,10 +88,8 @@ public abstract class PObject {
 		body.getMotionState().getWorldTransform(trans);
 		
 		applet.pushMatrix();
-		applet.translate(
-				trans.origin.x * GRAPHICS_UNITS_PER_PHYSICS_UNITS, 
-				-trans.origin.y * GRAPHICS_UNITS_PER_PHYSICS_UNITS,
-				trans.origin.z * GRAPHICS_UNITS_PER_PHYSICS_UNITS);		
+		Vector3f graphicsPos = this.getGraphicsPos();
+		applet.translate(graphicsPos.x, -graphicsPos.y, graphicsPos.z);	
 		rotateFromQuaternion(trans.getRotation(new Quat4f()));
 		draw();
 		applet.popMatrix();

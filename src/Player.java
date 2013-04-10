@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 
 import javax.vecmath.Vector3f;
 
+import com.bulletphysics.linearmath.Transform;
+
 import processing.core.PApplet;
 
 
@@ -24,6 +26,7 @@ public class Player extends Sphere {
 	
 	private float rotation;
 	private boolean canJump;
+	private Vector3f editorModeMovementOffset;
 	
 	public Player(Vector3f pos_, SpheresVsCubes applet_) {
 		super(pos_, PLAYER_INITIAL_RADIUS, 2, Color.GREEN, applet_);
@@ -34,6 +37,20 @@ public class Player extends Sphere {
 	
 	public float getRotation() {
 		return rotation;
+	}
+
+	// In editor mode, we must update the position without
+		// updating the real physics position until we exit editor mode
+		// (since the physics position of a body won't actually change until
+		// we step the simulation)
+	@Override 
+	public Vector3f getPhysicsPos() {
+		Vector3f physicsPos = super.getPhysicsPos();
+		if (editorModeMovementOffset != null && applet.isEditorMode) {
+			physicsPos.add(editorModeMovementOffset);
+		}
+		return physicsPos;
+		
 	}
 
 	@Override
@@ -49,40 +66,66 @@ public class Player extends Sphere {
 	
 	@Override
 	public void update() {
-		// Rotate the player
-		if (Input.checkKey(KeyEvent.VK_A) || Input.checkKey(PApplet.LEFT)) {
-			rotation -= PApplet.radians(3);
-		}
-		else if (Input.checkKey(KeyEvent.VK_D) || Input.checkKey(PApplet.RIGHT)) {
-			rotation += PApplet.radians(3);
-		}
+        // Rotate the player
+        if (Input.checkKey(KeyEvent.VK_A) || Input.checkKey(PApplet.LEFT)) {
+            rotation -= PApplet.radians(3);
+        }
+        else if (Input.checkKey(KeyEvent.VK_D) || Input.checkKey(PApplet.RIGHT)) {
+            rotation += PApplet.radians(3);
+        }
+
+        boolean isForwardPressed  = Input.checkKey(KeyEvent.VK_W) || Input.checkKey(PApplet.UP);
+        boolean isBackwardPressed = Input.checkKey(KeyEvent.VK_S) || Input.checkKey(PApplet.DOWN);
+        float movementImpulseX = PApplet.cos(this.rotation) * PLAYER_MOVEMENT_IMPULSE; 
+        float movementImpulseZ = PApplet.sin(this.rotation) * PLAYER_MOVEMENT_IMPULSE;
+        
+        if (applet.isEditorMode) {
+            if (isForwardPressed) {
+            	this.editorModeMovementOffset.add(new Vector3f(-0.3f*movementImpulseX, 0, -0.3f*movementImpulseZ));
+            } else if (isBackwardPressed) {
+            	this.editorModeMovementOffset.add(new Vector3f(0.3f*movementImpulseX, 0, 0.3f*movementImpulseZ));
+            }
+            if (Input.checkKey(KeyEvent.VK_SPACE)) {
+            	this.editorModeMovementOffset.add(new Vector3f(0, -PLAYER_MOVEMENT_IMPULSE*0.3f, 0));
+            } else if (Input.checkKey(KeyEvent.VK_BACK_SPACE)) {
+            	this.editorModeMovementOffset.add(new Vector3f(0, PLAYER_MOVEMENT_IMPULSE*0.3f, 0));
+            }
+        } else {
+            // Move the player
+            Vector3f currentVelocity = body.getLinearVelocity(new Vector3f());
+            float currentSpeed = PApplet.sqrt(PApplet.sq(currentVelocity.x) + PApplet.sq(currentVelocity.z));
 		
-		// Move the player
-		Vector3f currentVelocity = body.getLinearVelocity(new Vector3f());
-		float currentSpeed = PApplet.sqrt(PApplet.sq(currentVelocity.x) + PApplet.sq(currentVelocity.z));
-		float movementImpulseX = PApplet.cos(this.rotation) * PLAYER_MOVEMENT_IMPULSE; 
-		float movementImpulseZ = PApplet.sin(this.rotation) * PLAYER_MOVEMENT_IMPULSE;
-		
-		boolean isForwardPressed  = Input.checkKey(KeyEvent.VK_W) || Input.checkKey(PApplet.UP);
-		boolean isBackwardPressed = Input.checkKey(KeyEvent.VK_S) || Input.checkKey(PApplet.DOWN);
-		
-		if (isForwardPressed && currentSpeed < PLAYER_MAX_SPEED) {
-			body.applyCentralImpulse(new Vector3f(-movementImpulseX, 0, -movementImpulseZ));
-		} else if (isBackwardPressed && currentSpeed < PLAYER_MAX_SPEED) {
-			body.applyCentralImpulse(new Vector3f(movementImpulseX, 0, movementImpulseZ));
-		}
-		else {
-			Vector3f normalized = new Vector3f(currentVelocity);
-			normalized.normalize();
-			float dampX = PLAYER_NO_MOVEMENT_DAMPING * normalized.x;
-			float dampZ = PLAYER_NO_MOVEMENT_DAMPING * normalized.z;
+            if (isForwardPressed && currentSpeed < PLAYER_MAX_SPEED) {
+                body.applyCentralImpulse(new Vector3f(-movementImpulseX, 0, -movementImpulseZ));
+            } else if (isBackwardPressed && currentSpeed < PLAYER_MAX_SPEED) {
+                body.applyCentralImpulse(new Vector3f(movementImpulseX, 0, movementImpulseZ));
+            }
+            else {
+                Vector3f normalized = new Vector3f(currentVelocity);
+                normalized.normalize();
+                float dampX = PLAYER_NO_MOVEMENT_DAMPING * normalized.x;
+                float dampZ = PLAYER_NO_MOVEMENT_DAMPING * normalized.z;
 			
-			body.applyCentralImpulse(new Vector3f(-dampX, 0, -dampZ));
-		}
-		// Make the player jump
-		if (Input.checkKey(KeyEvent.VK_SPACE) && canJump) {
-			body.applyCentralImpulse(new Vector3f(0, PLAYER_JUMP_IMPULSE, 0));
-			canJump = false;
+                body.applyCentralImpulse(new Vector3f(-dampX, 0, -dampZ));
+            }
+            // Make the player jump
+            if (Input.checkKey(KeyEvent.VK_SPACE) && canJump) {
+                body.applyCentralImpulse(new Vector3f(0, PLAYER_JUMP_IMPULSE, 0));
+                canJump = false;
+            }
+        }
+	}
+	
+	public void toggleEditorMode() {
+		if (!this.applet.isEditorMode) {
+			this.applet.isEditorMode = true;
+			this.editorModeMovementOffset = new Vector3f(0, 0, 0);
+		} else {
+			this.applet.isEditorMode = false;
+			editorModeMovementOffset.y = -editorModeMovementOffset.y;
+			this.body.translate(editorModeMovementOffset);
+			this.editorModeMovementOffset = null;
 		}
 	}
 }
+

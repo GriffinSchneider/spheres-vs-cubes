@@ -16,7 +16,7 @@ public class Enemy extends Box {
 	
 	@Override
 	public void update() {
-		if (count++ > SHOT_DELAY) {
+		if (count++ > SHOT_DELAY && !applet.isEditorMode) {
 			count = 0;
 			
 			Vector3f pos = getGraphicsPos();

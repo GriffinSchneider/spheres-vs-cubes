@@ -16,7 +16,7 @@ public class Bullet extends Box {
 	
 	@Override
 	public void update() {
-		if (count++ > LIFE_SPAN) {
+		if (!applet.isEditorMode && count++ > LIFE_SPAN) {
 			remove();
 		}
 	}
