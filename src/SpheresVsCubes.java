@@ -21,7 +21,6 @@ public class SpheresVsCubes extends PApplet {
     @Override
 	public void setup() {
 		size(800, 600, P3D);
-		strokeWeight(1f);  // Default
 		lights();
 		
 		nextScene = new MenuScene(this);

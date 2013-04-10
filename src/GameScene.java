@@ -21,7 +21,7 @@ public class GameScene extends Scene {
 
 	public static final float WORLD_GRAVITY = 500f / PObject.GRAPHICS_UNITS_PER_PHYSICS_UNITS;
 	
-	public static Player player;
+	private Player player;
 	
 	public static DiscreteDynamicsWorld dynamicsWorld;
 	
@@ -31,6 +31,7 @@ public class GameScene extends Scene {
 
 	@Override
 	public void init() {
+		applet.strokeWeight(1f);  // Default
 		initPhysics();
 	}
 
@@ -59,6 +60,8 @@ public class GameScene extends Scene {
 		dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 		dynamicsWorld.setGravity(new Vector3f(0, -WORLD_GRAVITY, 0));
 
+		player = new Player(new Vector3f(0, 250, 0), applet);
+		
 		new Box(new Vector3f(), new Vector3f(150, 5, 450), 0, Color.GRAY, applet);
 		
 		new Box(new Vector3f(200, 0, 0), new Vector3f(150, 5, 450), 0, Color.GRAY, applet);
@@ -69,15 +72,13 @@ public class GameScene extends Scene {
 		
 		new Box(new Vector3f(50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, applet);
 		
-		new Enemy(new Vector3f(0, 150, 0), applet);
+		new Enemy(player, new Vector3f(0, 150, 0), applet);
 	
-		new Enemy(new Vector3f(150, 150, 0), applet);
+		new Enemy(player, new Vector3f(150, 150, 0), applet);
 
-		new Enemy(new Vector3f(150, 150, 100), applet);
+		new Enemy(player, new Vector3f(150, 150, 100), applet);
 		
 		new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 10, 5000), 0, Color.GRAY, applet);
-		
-		player = new Player(new Vector3f(0, 250, 0), applet);
     }
 	
 	@Override
