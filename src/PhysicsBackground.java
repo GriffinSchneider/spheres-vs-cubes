@@ -45,7 +45,7 @@ public class PhysicsBackground extends Node {
 		// quality and performance
 		Vector3f worldAabbMin = new Vector3f(-5000, -5000, -5000);
 		Vector3f worldAabbMax = new Vector3f(5000, 5000, 5000);
-		int maxProxies = 100;
+		int maxProxies = 400;
 		AxisSweep3 overlappingPairCache = new AxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
 		// the default constraint solver. For parallel processing you can use a
