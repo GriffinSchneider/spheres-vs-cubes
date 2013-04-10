@@ -14,15 +14,15 @@ public class Player extends Sphere {
 	// Initial radius in graphics units of the player sphere
     public static final float PLAYER_INITIAL_RADIUS = 10;
     // Magnitude of impulse to apply each frame in the x-direction to make the player move
-    public static final float PLAYER_MOVEMENT_IMPULSE = 20 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
+    public static final float PLAYER_MOVEMENT_IMPULSE = 30 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
     // Maximum x-velocity that the player can reach before we stop increasing the velocity
     // due to key presses.
-    public static final float PLAYER_MAX_SPEED = 140 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
+    public static final float PLAYER_MAX_SPEED = 190 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
     // Amount to decrease the player's x-velocity each frame if no movement buttons
     // are being pressed.
-    public static final float PLAYER_NO_MOVEMENT_DAMPING = 4 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
+    public static final float PLAYER_NO_MOVEMENT_DAMPING = 10 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
     // Magnitude of impulse in the y-direction to apply to make the player "jump"
-    public static final float PLAYER_JUMP_IMPULSE = 200 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
+    public static final float PLAYER_JUMP_IMPULSE = 300 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
 	
 	private float horizontalRotation = (float)Math.PI/3;
 	private float verticalRotation = (float)Math.PI/4;
@@ -84,30 +84,21 @@ public class Player extends Sphere {
 	    boolean isRightPressed    = Input.checkKey(KeyEvent.VK_D) || Input.checkKey(PApplet.RIGHT);
 	    boolean isMovementButtonPressed = isForwardPressed || isBackwardPressed || isLeftPressed || isRightPressed;
 	    
-	    float movementImpulseX;
-        float movementImpulseZ;
-        
-        if (isForwardPressed) {
-        	movementImpulseX = -PApplet.cos(this.horizontalRotation); 
-            movementImpulseZ = -PApplet.sin(this.horizontalRotation);
-        } else if (isBackwardPressed) {
-        	movementImpulseX = PApplet.cos(this.horizontalRotation); 
-            movementImpulseZ = PApplet.sin(this.horizontalRotation);
-        } else if (isLeftPressed) {
-        	movementImpulseX = -PApplet.sin(this.horizontalRotation); 
-            movementImpulseZ = PApplet.cos(this.horizontalRotation);
-        } else {
-        	movementImpulseX = PApplet.sin(this.horizontalRotation); 
-            movementImpulseZ = -PApplet.cos(this.horizontalRotation);
-        }
-        movementImpulseX *= PLAYER_MOVEMENT_IMPULSE;
-        movementImpulseZ *= PLAYER_MOVEMENT_IMPULSE;
+	    float movementImpulseX = PApplet.cos(this.horizontalRotation) * PLAYER_MOVEMENT_IMPULSE;
+        float movementImpulseZ = PApplet.sin(this.horizontalRotation) * PLAYER_MOVEMENT_IMPULSE;
         
         if (applet.isEditorMode) {
         	// Move along horizontal plane
-        	if (isMovementButtonPressed) {
-        		this.editorModeMovementOffset.add(new Vector3f(0.3f*movementImpulseX, 0, 0.3f*movementImpulseZ));
-        	}
+            if (isForwardPressed) {
+            	this.editorModeMovementOffset.add(new Vector3f(0.3f*-movementImpulseX, 0, 0.3f*-movementImpulseZ));
+            } else if (isBackwardPressed) {
+            	this.editorModeMovementOffset.add(new Vector3f(0.3f*movementImpulseX, 0, 0.3f*movementImpulseZ));
+            }
+            if (isLeftPressed) {
+            	this.editorModeMovementOffset.add(new Vector3f(0.3f*-movementImpulseZ, 0, 0.3f*movementImpulseX));
+            } else if (isRightPressed) {
+            	this.editorModeMovementOffset.add(new Vector3f(0.3f*movementImpulseZ, 0, 0.3f*-movementImpulseX));
+            }
         	
             // Move up/down
             if (Input.checkKey(KeyEvent.VK_SPACE)) {
@@ -121,9 +112,17 @@ public class Player extends Sphere {
             float currentSpeed = PApplet.sqrt(PApplet.sq(currentVelocity.x) + PApplet.sq(currentVelocity.z));
 		
             if (isMovementButtonPressed && currentSpeed < PLAYER_MAX_SPEED) {
-            	// Move the player
-                body.applyCentralImpulse(new Vector3f(movementImpulseX, 0, movementImpulseZ));
-            } else if (!isMovementButtonPressed) {
+                if (isForwardPressed) {
+                	body.applyCentralImpulse(new Vector3f(-movementImpulseX, 0, -movementImpulseZ));
+                } else if (isBackwardPressed) {
+                	body.applyCentralImpulse(new Vector3f(movementImpulseX, 0, movementImpulseZ));
+                }
+                if (isLeftPressed) {
+                	body.applyCentralImpulse(new Vector3f(-movementImpulseZ, 0, movementImpulseX));
+                } else if (isRightPressed) {
+                	body.applyCentralImpulse(new Vector3f(movementImpulseZ, 0, -movementImpulseX));
+                }
+            } else {
                 Vector3f normalized = new Vector3f(currentVelocity);
                 normalized.normalize();
                 float dampX = PLAYER_NO_MOVEMENT_DAMPING * normalized.x;
