@@ -1,4 +1,3 @@
-import java.awt.event.KeyEvent;
 
 import processing.core.PApplet;
 

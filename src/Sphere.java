@@ -25,7 +25,7 @@ public class Sphere extends PObject {
 	}
 	
 	public void setRadius(float radius_) {
-		if (radius > 0) {
+		if (radius_ > 0) {
 			radius = radius_;
 			this.body.setCollisionShape(new SphereShape(radius / GRAPHICS_UNITS_PER_PHYSICS_UNITS));
 		}

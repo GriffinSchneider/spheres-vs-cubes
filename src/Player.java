@@ -3,11 +3,8 @@
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
-import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.linearmath.QuaternionUtil;
-import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 
 import processing.core.PApplet;
@@ -60,7 +57,7 @@ public class Player extends Sphere {
 	public void onCollision(PObject object) {
 		if (object instanceof Bullet) {
 			object.remove();
-			this.setRadius(--this.radius);
+			this.setRadius(this.radius - 1);
 		}
 		else {
 			canJump = true;

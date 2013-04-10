@@ -50,7 +50,7 @@ public class GameScene extends Scene {
 		// quality and performance
 		Vector3f worldAabbMin = new Vector3f(-5000, -5000, -5000);
 		Vector3f worldAabbMax = new Vector3f(5000, 5000, 5000);
-		int maxProxies = 100;
+		int maxProxies = 150;
 		AxisSweep3 overlappingPairCache = new AxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
 		// the default constraint solver. For parallel processing you can use a
@@ -62,15 +62,15 @@ public class GameScene extends Scene {
 
 		player = new Player(new Vector3f(0, 250, 0), dynamicsWorld, applet);
 		
-		new Box(new Vector3f(), new Vector3f(150, 5, 450), 0, Color.GRAY, dynamicsWorld, applet);
+		new Box(new Vector3f(), new Vector3f(150, 10, 450), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(200, 0, 0), new Vector3f(150, 5, 450), 0, Color.GRAY, dynamicsWorld, applet);
+		new Box(new Vector3f(200, 0, 0), new Vector3f(150, 10, 450), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(0, 100, 0), new Vector3f(150, 5, 150), 0, Color.GRAY, dynamicsWorld, applet);
+		new Box(new Vector3f(0, 100, 0), new Vector3f(150, 10, 150), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(-50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, dynamicsWorld, applet);
+		new Box(new Vector3f(-50, 100, 0), new Vector3f(10, 150, 150), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(50, 100, 0), new Vector3f(5, 150, 150), 0, Color.GRAY, dynamicsWorld, applet);
+		new Box(new Vector3f(50, 100, 0), new Vector3f(10, 150, 150), 0, Color.GRAY, dynamicsWorld, applet);
 		
 		new Enemy(player, new Vector3f(0, 150, 0), dynamicsWorld, applet);
 	
@@ -78,7 +78,7 @@ public class GameScene extends Scene {
 
 		new Enemy(player, new Vector3f(150, 150, 100), dynamicsWorld, applet);
 		
-		new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 10, 5000), 0, Color.GRAY, dynamicsWorld, applet);
+		new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 100, 5000), 0, Color.GRAY, dynamicsWorld, applet);
     }
 	
 	@Override
@@ -87,7 +87,7 @@ public class GameScene extends Scene {
 		
 		// Do physics simulation
 		if (!applet.isEditorMode) {
-			dynamicsWorld.stepSimulation(1.f / 60.f, 10);
+			dynamicsWorld.stepSimulation(1.f / 60.f, 15);
 			checkCollisions();
 		}
 		
