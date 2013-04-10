@@ -5,8 +5,6 @@ import java.awt.event.KeyEvent;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.linearmath.Transform;
-
 import processing.core.PApplet;
 
 

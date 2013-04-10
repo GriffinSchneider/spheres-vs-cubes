@@ -12,13 +12,19 @@ public class SpheresVsCubes extends PApplet {
 	private Scene currentScene;
 	private Scene nextScene;
 	
+	public void changeScene(Scene scene) {
+		if (nextScene == null) {
+			nextScene = scene;
+		}
+	}
+	
     @Override
 	public void setup() {
 		size(800, 600, P3D);
 		strokeWeight(1f);  // Default
 		lights();
 		
-		nextScene = new GameScene(this);
+		nextScene = new MenuScene(this);
 	}
     
 	@Override
@@ -35,7 +41,6 @@ public class SpheresVsCubes extends PApplet {
 		if (currentScene != null) {
 			currentScene.update();
 			currentScene.draw();
-			//Input.update();
 		}
 	}
 	
