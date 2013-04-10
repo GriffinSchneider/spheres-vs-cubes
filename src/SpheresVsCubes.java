@@ -55,6 +55,11 @@ public class SpheresVsCubes extends PApplet {
 	}
 	
 	@Override
+	public void mouseMoved() {
+		currentScene.mouseMoved(mouseX, mouseY);
+	}
+	
+	@Override
 	public void keyPressed() {
 		currentScene.keyPressed(keyCode);
 		Input.keyPressed(keyCode);

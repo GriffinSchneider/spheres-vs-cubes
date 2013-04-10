@@ -25,8 +25,8 @@ public class Player extends Sphere {
     // Magnitude of impulse in the y-direction to apply to make the player "jump"
     public static final float PLAYER_JUMP_IMPULSE = 200 / GRAPHICS_UNITS_PER_PHYSICS_UNITS;
 	
-	private float horizontalRotation;
-	private float verticalRotation;
+	private float horizontalRotation = (float)Math.PI/3;
+	private float verticalRotation = (float)Math.PI/4;
 	private boolean canJump;
 	private Vector3f editorModeMovementOffset;
 	
@@ -78,38 +78,38 @@ public class Player extends Sphere {
 	}
 	
 	@Override
-	public void update() {
-        // Rotate the player horizontally
-        if (Input.checkKey(KeyEvent.VK_A) || Input.checkKey(PApplet.LEFT)) {
-            horizontalRotation -= PApplet.radians(3);
-        } else if (Input.checkKey(KeyEvent.VK_D) || Input.checkKey(PApplet.RIGHT)) {
-            horizontalRotation += PApplet.radians(3);
-        }
-        
-        // Rotate the player up/down
-        if (Input.checkKey(KeyEvent.VK_Z)) {
-        	verticalRotation -= PApplet.radians(3);
-        } else if (Input.checkKey(KeyEvent.VK_X)) {
-        	verticalRotation += PApplet.radians(3);
-        }
-        
-        // Clamp vertical rotation so you can't look past 'all the way' up or down.
-        // Letting the angle actually get to pi or 0 breaks stuff.
-        if (verticalRotation > Math.PI - 0.001f) verticalRotation = (float)Math.PI - 0.001f;
-        if (verticalRotation < 0.001f) verticalRotation = 0.001f;
-
+	public void update() {     
         boolean isForwardPressed  = Input.checkKey(KeyEvent.VK_W) || Input.checkKey(PApplet.UP);
         boolean isBackwardPressed = Input.checkKey(KeyEvent.VK_S) || Input.checkKey(PApplet.DOWN);
-        float movementImpulseX = PApplet.cos(this.horizontalRotation) * PLAYER_MOVEMENT_IMPULSE; 
-        float movementImpulseZ = PApplet.sin(this.horizontalRotation) * PLAYER_MOVEMENT_IMPULSE;
+        boolean isLeftPressed     = Input.checkKey(KeyEvent.VK_A) || Input.checkKey(PApplet.LEFT);
+	    boolean isRightPressed    = Input.checkKey(KeyEvent.VK_D) || Input.checkKey(PApplet.RIGHT);
+	    boolean isMovementButtonPressed = isForwardPressed || isBackwardPressed || isLeftPressed || isRightPressed;
+	    
+	    float movementImpulseX;
+        float movementImpulseZ;
+        
+        if (isForwardPressed) {
+        	movementImpulseX = -PApplet.cos(this.horizontalRotation); 
+            movementImpulseZ = -PApplet.sin(this.horizontalRotation);
+        } else if (isBackwardPressed) {
+        	movementImpulseX = PApplet.cos(this.horizontalRotation); 
+            movementImpulseZ = PApplet.sin(this.horizontalRotation);
+        } else if (isLeftPressed) {
+        	movementImpulseX = -PApplet.sin(this.horizontalRotation); 
+            movementImpulseZ = PApplet.cos(this.horizontalRotation);
+        } else {
+        	movementImpulseX = PApplet.sin(this.horizontalRotation); 
+            movementImpulseZ = -PApplet.cos(this.horizontalRotation);
+        }
+        movementImpulseX *= PLAYER_MOVEMENT_IMPULSE;
+        movementImpulseZ *= PLAYER_MOVEMENT_IMPULSE;
         
         if (applet.isEditorMode) {
-        	// Move forward/backward
-            if (isForwardPressed) {
-            	this.editorModeMovementOffset.add(new Vector3f(-0.3f*movementImpulseX, 0, -0.3f*movementImpulseZ));
-            } else if (isBackwardPressed) {
-            	this.editorModeMovementOffset.add(new Vector3f(0.3f*movementImpulseX, 0, 0.3f*movementImpulseZ));
-            }
+        	// Move along horizontal plane
+        	if (isMovementButtonPressed) {
+        		this.editorModeMovementOffset.add(new Vector3f(0.3f*movementImpulseX, 0, 0.3f*movementImpulseZ));
+        	}
+        	
             // Move up/down
             if (Input.checkKey(KeyEvent.VK_SPACE)) {
             	this.editorModeMovementOffset.add(new Vector3f(0, -PLAYER_MOVEMENT_IMPULSE*0.3f, 0));
@@ -118,16 +118,13 @@ public class Player extends Sphere {
             }
 
         } else {
-            // Move the player
             Vector3f currentVelocity = body.getLinearVelocity(new Vector3f());
             float currentSpeed = PApplet.sqrt(PApplet.sq(currentVelocity.x) + PApplet.sq(currentVelocity.z));
 		
-            if (isForwardPressed && currentSpeed < PLAYER_MAX_SPEED) {
-                body.applyCentralImpulse(new Vector3f(-movementImpulseX, 0, -movementImpulseZ));
-            } else if (isBackwardPressed && currentSpeed < PLAYER_MAX_SPEED) {
+            if (isMovementButtonPressed && currentSpeed < PLAYER_MAX_SPEED) {
+            	// Move the player
                 body.applyCentralImpulse(new Vector3f(movementImpulseX, 0, movementImpulseZ));
-            }
-            else {
+            } else if (!isMovementButtonPressed) {
                 Vector3f normalized = new Vector3f(currentVelocity);
                 normalized.normalize();
                 float dampX = PLAYER_NO_MOVEMENT_DAMPING * normalized.x;
@@ -157,19 +154,28 @@ public class Player extends Sphere {
 		}
 	}
 	
+	public void mouseMoved(int dx, int dy) {
+		horizontalRotation += dx / 100f;
+		verticalRotation -= dy / 100f;
+        // Clamp vertical rotation so you can't look past 'all the way' up or down.
+        // Letting the angle actually get to pi or 0 breaks stuff.
+        if (verticalRotation > Math.PI - 0.001f) verticalRotation = (float)Math.PI - 0.001f;
+        if (verticalRotation < 0.001f) verticalRotation = 0.001f;
+	}
+	
 	// Place rectangle slightly in front of the player if editing
 	public void placeRectangle() {
 		if (applet.isEditorMode) {
 			Vector3f pos = getGraphicsPos();
 	    	pos.add(new Vector3f(-PApplet.cos(this.horizontalRotation)*20, 0, -PApplet.sin(this.horizontalRotation)*20));
-	    	Box b = new Box(pos, 
-		        			new Vector3f(5, 200, 200),
-		        			-horizontalRotation,
-		        			verticalRotation - (float)Math.PI/2,
-		        			0, 
-		        			Color.GREEN,
-		        			this.world,
-		        			this.applet);
+	    	new Box(pos, 
+        			new Vector3f(5, 200, 200),
+        			-horizontalRotation,
+        			verticalRotation - (float)Math.PI/2,
+        			0, 
+        			Color.GREEN,
+        			this.world,
+        			this.applet);
 		}
 	}
 }

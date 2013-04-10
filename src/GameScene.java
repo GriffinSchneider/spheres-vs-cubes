@@ -1,4 +1,7 @@
+import java.awt.AWTException;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
 
 import javax.vecmath.Vector3f;
@@ -23,6 +26,8 @@ public class GameScene extends Scene {
 	public static final float CAMERA_DISTANCE = 100f;
 	
 	private Player player;
+	private int lastMouseX = -1;
+	private int lastMouseY = -1;
 	
 	private DiscreteDynamicsWorld dynamicsWorld;
 	
@@ -33,7 +38,8 @@ public class GameScene extends Scene {
 	@Override
 	public void init() {
 		applet.strokeWeight(1f);  // Default
-		initPhysics();
+		initPhysics(); 
+		applet.noCursor();
 	}
 
 	public void initPhysics() {
@@ -170,6 +176,7 @@ public class GameScene extends Scene {
 		player = null;
 		dynamicsWorld.destroy();
 		dynamicsWorld = null;
+		applet.cursor();
 	}
 	
 	@Override
@@ -179,5 +186,19 @@ public class GameScene extends Scene {
 		} else if (keyCode == KeyEvent.VK_R) {
 			this.player.placeRectangle();
 		}
+	}
+	
+	@Override
+	public void mouseMoved(int mouseX, int mouseY) {
+		// Ignore the first mouse moved since we don't know the previous position
+		if (lastMouseX == -1 && lastMouseY == -1) {
+			lastMouseX = mouseX;
+			lastMouseY = mouseY;
+			return;
+		}
+		player.mouseMoved(mouseX - lastMouseX, mouseY - lastMouseY);
+		lastMouseX = mouseX;
+		lastMouseY = mouseY;
+		
 	}
 }

@@ -21,7 +21,6 @@ public abstract class Scene extends Node {
         Button.removeButtons();
     }
     
-    public void keyPressed(int keyCode) {
-    	
-    }
+    public void keyPressed(int keyCode) {}
+    public void mouseMoved(int mouseX, int mouseY) {}
 }
