@@ -24,8 +24,8 @@ public class Player extends Sphere {
     public static final float PLAYER_JUMP_DELAY = 10;
     public static final float PLAYER_MASS = 2;
 	
-	private float horizontalRotation = (float)Math.PI/3;
-	private float verticalRotation = (float)Math.PI/4;
+	public float horizontalRotation = (float)Math.PI/3;
+	public float verticalRotation = (float)Math.PI/4;
 	private boolean canJump;
 	private Vector3f editorModeMovementOffset;
 	
@@ -36,14 +36,6 @@ public class Player extends Sphere {
 		canJump = false;
 	}
 	
-	public float getHorizontalRotation() {
-		return horizontalRotation;
-	}
-	
-	public float getVerticalRotation() {
-		return verticalRotation;
-	}
-
 	// In editor mode, we must update the position without
 	// updating the real physics position until we exit editor mode
 	// (since the physics position of a body won't actually change until

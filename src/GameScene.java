@@ -115,8 +115,8 @@ public class GameScene extends Scene {
 		}
 		
 		Vector3f playerPos = player.getGraphicsPos();
-		float playerHorizontalRotation = player.getHorizontalRotation();
-		float playerVerticalRotation = player.getVerticalRotation();
+		float playerHorizontalRotation = player.horizontalRotation;
+		float playerVerticalRotation = player.verticalRotation;
 		
 		// applet.perspective(PApplet.radians(60), applet.width / applet.height, 0.01f, 5000);
 		// applet.ortho(0, applet.width, 0, applet.height, -1000, 1000); // This looks really cool
@@ -233,8 +233,36 @@ public class GameScene extends Scene {
             if (!growVector.equals(new Vector3f(0, 0, 0)) && this.lastPlacedBox != null) {
                 this.lastPlacedBox.grow(growVector);
             }
-        }
 
+            // Snap the horizontal angle to cardinal directions with (shift +) I, K
+            if (Input.checkKey(KeyEvent.VK_I)) {
+                if (Input.checkKey(KeyEvent.VK_SHIFT)) {
+                    player.horizontalRotation = (float)Math.PI;
+                } else {
+                    player.horizontalRotation = 0;
+                }
+            } else if (Input.checkKey(KeyEvent.VK_K)) {
+                if (Input.checkKey(KeyEvent.VK_SHIFT)) {
+                    player.horizontalRotation = (float)Math.PI/2;
+                } else {
+                    player.horizontalRotation = -(float)Math.PI/2;
+                }
+            }
+
+            // Snap the vertical angle to up/down with (shift + ) comma.
+            if (Input.checkKey(KeyEvent.VK_COMMA)) {
+                if (Input.checkKey(KeyEvent.VK_SHIFT)) {
+                    player.verticalRotation = (float)Math.PI - 0.0001f;
+                } else {
+                    player.verticalRotation = 0.0001f;
+                }
+            }
+
+            // Snap the vertical angle to looking horizontally with o.
+            if (Input.checkKey(KeyEvent.VK_O)) {
+                player.verticalRotation = (float)Math.PI/2;
+            }
+        }
     }
 	
 	@Override
