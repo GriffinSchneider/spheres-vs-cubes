@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -73,25 +72,25 @@ public class GameScene extends Scene {
 
 		player = new Player(new Vector3f(0, 250, 0), dynamicsWorld, applet);
 		
-		new Box(new Vector3f(), new Vector3f(150, 10, 450), 0, Color.GRAY, dynamicsWorld, applet);
+		// new Box(new Vector3f(), new Vector3f(150, 10, 450), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(200, 0, 0), new Vector3f(150, 10, 450), 0, Color.GRAY, dynamicsWorld, applet);
+		// new Box(new Vector3f(200, 0, 0), new Vector3f(150, 10, 450), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(0, 100, 0), new Vector3f(150, 10, 150), 0, Color.GRAY, dynamicsWorld, applet);
+		// new Box(new Vector3f(0, 100, 0), new Vector3f(150, 10, 150), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(-50, 100, 0), new Vector3f(10, 150, 150), 0, Color.GRAY, dynamicsWorld, applet);
+		// new Box(new Vector3f(-50, 100, 0), new Vector3f(10, 150, 150), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Box(new Vector3f(50, 100, 0), new Vector3f(10, 150, 150), 0, Color.GRAY, dynamicsWorld, applet);
+		// new Box(new Vector3f(50, 100, 0), new Vector3f(10, 150, 150), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new Enemy(player, new Vector3f(0, 150, 0), dynamicsWorld, applet);
+		// new Enemy(player, new Vector3f(0, 150, 0), dynamicsWorld, applet);
 	
-		new Enemy(player, new Vector3f(150, 150, 0), dynamicsWorld, applet);
+		// new Enemy(player, new Vector3f(150, 150, 0), dynamicsWorld, applet);
 
-		new Enemy(player, new Vector3f(150, 150, 100), dynamicsWorld, applet);
+		// new Enemy(player, new Vector3f(150, 150, 100), dynamicsWorld, applet);
 		
-		new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 100, 5000), 0, Color.GRAY, dynamicsWorld, applet);
+		// new Box(new Vector3f(0, -100, 0), new Vector3f(5000, 100, 5000), 0, Color.GRAY, dynamicsWorld, applet);
 		
-		new EndPoint(new Vector3f(100, 50, 100), dynamicsWorld, applet);
+		// new EndPoint(new Vector3f(100, 50, 100), dynamicsWorld, applet);
     }
 	
 	@Override
@@ -103,13 +102,9 @@ public class GameScene extends Scene {
 			dynamicsWorld.stepSimulation(1.f / 60.f, 25);
 			checkCollisions();
 		}
+
+        checkKeys();
 		
-		if (Input.checkKey(KeyEvent.VK_EQUALS)) {
-			cameraDistance -= 5;
-		} else if (Input.checkKey(KeyEvent.VK_MINUS)) {
-			cameraDistance += 5;
-		}
-		if (cameraDistance < 0) cameraDistance = 0;
 		
 		applet.background(0, 0, 0);
 		applet.translate(applet.width / 2f, applet.height / 2f, 0);
@@ -182,6 +177,65 @@ public class GameScene extends Scene {
 			}
 		}
 	}
+
+    private Box lastPlacedBox;
+    public void checkKeys() {
+        // Zoom camera
+		if (Input.checkKey(KeyEvent.VK_EQUALS)) {
+			cameraDistance -= 5;
+		} else if (Input.checkKey(KeyEvent.VK_MINUS)) {
+			cameraDistance += 5;
+		}
+		if (cameraDistance < 0) cameraDistance = 0;
+        
+        if (applet.isEditorMode) {
+
+            // Hold backslash or quote to make all changes happen faster or slower
+            float changeAmount = 1;
+            if (Input.checkKey(KeyEvent.VK_BACK_SLASH)) {
+                changeAmount = 4;
+            } else if (Input.checkKey(KeyEvent.VK_QUOTE)) {
+                changeAmount = 0.3f;
+            }
+            
+            // Shift the previously placed box with (shift +) Y, H, N
+            Vector3f shiftVector = new Vector3f(0, 0, 0);
+            if (Input.checkKey(KeyEvent.VK_Y)) {
+                shiftVector.add(new Vector3f(changeAmount, 0, 0));
+            }
+            if (Input.checkKey(KeyEvent.VK_H)) {
+                shiftVector.add(new Vector3f(0, changeAmount, 0));
+            }
+            if (Input.checkKey(KeyEvent.VK_N)) {
+                shiftVector.add(new Vector3f(0, 0, changeAmount));
+            }
+            if (Input.checkKey(KeyEvent.VK_SHIFT)) {
+                shiftVector.scale(-1);
+            }
+            if (!shiftVector.equals(new Vector3f(0, 0, 0)) && this.lastPlacedBox != null) {
+                this.lastPlacedBox.shift(shiftVector);
+            }
+
+            // Scale the previously placed box with (shift +) U, J, M
+            Vector3f growVector = new Vector3f(0, 0, 0);
+            if (Input.checkKey(KeyEvent.VK_U)) {
+                growVector.add(new Vector3f(changeAmount, 0, 0));
+            }
+            if (Input.checkKey(KeyEvent.VK_J)) {
+                growVector.add(new Vector3f(0, changeAmount, 0));
+            }
+            if (Input.checkKey(KeyEvent.VK_M)) {
+                growVector.add(new Vector3f(0, 0, changeAmount));
+            }
+            if (Input.checkKey(KeyEvent.VK_SHIFT)) {
+                growVector.scale(-1);
+            }
+            if (!growVector.equals(new Vector3f(0, 0, 0)) && this.lastPlacedBox != null) {
+                this.lastPlacedBox.grow(growVector);
+            }
+        }
+
+    }
 	
 	@Override
 	public void cleanUp() {
@@ -197,8 +251,10 @@ public class GameScene extends Scene {
 		if (keyCode == KeyEvent.VK_E) {
 			this.player.toggleEditorMode();
 		} else if (keyCode == KeyEvent.VK_R) {
-			this.player.placeRectangle();
-		}
+			lastPlacedBox = this.player.placeRectangle();
+		} else if (keyCode == KeyEvent.VK_T) {
+            this.player.placeEnemy();
+        }
 	}
 	
 	void mouseWheel(int delta) {

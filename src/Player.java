@@ -1,5 +1,3 @@
-
-
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
@@ -166,12 +164,12 @@ public class Player extends Sphere {
         if (verticalRotation < 0.001f) verticalRotation = 0.001f;
 	}
 	
-	// Place rectangle slightly in front of the player if editing
-	public void placeRectangle() {
+	// Place ground rectangle slightly in front of the player if editing
+	public Box placeRectangle() {
 		if (applet.isEditorMode) {
 			Vector3f pos = getGraphicsPos();
 	    	pos.add(new Vector3f(-PApplet.cos(this.horizontalRotation)*20, 0, -PApplet.sin(this.horizontalRotation)*20));
-	    	new Box(pos, 
+	    	return new Box(pos, 
         			new Vector3f(5, 200, 200),
         			-horizontalRotation,
         			verticalRotation - (float)Math.PI/2,
@@ -180,6 +178,16 @@ public class Player extends Sphere {
         			this.world,
         			this.applet);
 		}
+        return null;
 	}
+    
+	// Place enemy slightly in front of the player if editing
+    public void placeEnemy() {
+		if (applet.isEditorMode) {
+			Vector3f pos = getGraphicsPos();
+	    	pos.add(new Vector3f(-PApplet.cos(this.horizontalRotation)*20, 0, -PApplet.sin(this.horizontalRotation)*20));
+            new Enemy(this, pos, this.world, applet);
+        }
+    }
 }
 
