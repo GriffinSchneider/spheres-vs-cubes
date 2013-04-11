@@ -46,6 +46,7 @@ public class SpheresVsCubes extends PApplet {
 			currentScene.update();
 			currentScene.draw();
 		}
+        // saveFrame("frames/frame####.tiff");
 	}
 	
 	@Override
