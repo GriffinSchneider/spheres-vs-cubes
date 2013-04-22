@@ -16,6 +16,9 @@ public class SpheresVsCubes extends PApplet {
 	public void changeScene(Scene scene) {
 		if (nextScene == null) {
 			nextScene = scene;
+			if (nextScene instanceof GameScene) {
+				nextScene.init();
+			}
 		}
 	}
 	
@@ -39,7 +42,9 @@ public class SpheresVsCubes extends PApplet {
 			}
 			currentScene = nextScene;
 			nextScene = null;
-			currentScene.init();
+			if (!(currentScene instanceof GameScene)) {
+				currentScene.init();
+			}
 		}
 
 		if (currentScene != null) {

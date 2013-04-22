@@ -11,10 +11,10 @@ import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 public class Box extends PObject {
 	protected Vector3f dim;
 
-    private Vector3f initialPos;
+    public Vector3f initialPos;
     private float initialMass;
-    private float horizontalRotation;
-    private float verticalRotation;
+    public float initialHorizontalRotation;
+    public float initialVerticalRotation;
 	
     public Box(Vector3f pos, Vector3f dim_, float mass, Color color_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_) {
         this(pos, dim_, 0, 0, mass, color_, world_, applet_);
@@ -24,8 +24,8 @@ public class Box extends PObject {
 		super(color_, world_, applet_);
         this.initialPos = pos;
 		dim = dim_;
-        this.horizontalRotation = horizontalRotation;
-        this.verticalRotation = verticalRotation;
+        this.initialHorizontalRotation = horizontalRotation;
+        this.initialVerticalRotation = verticalRotation;
         this.initialMass = mass;
         this.makeShape();
 	}
@@ -36,8 +36,8 @@ public class Box extends PObject {
                  new BoxShape(new Vector3f(dim.x / (2*GRAPHICS_UNITS_PER_PHYSICS_UNITS), 
                                            dim.y / (2*GRAPHICS_UNITS_PER_PHYSICS_UNITS), 
                                            dim.z / (2*GRAPHICS_UNITS_PER_PHYSICS_UNITS))),
-                 horizontalRotation,
-                 verticalRotation);
+                 initialHorizontalRotation,
+                 initialVerticalRotation);
     }
 
     public void shift(Vector3f shift) {

@@ -28,12 +28,15 @@ public class Player extends Sphere {
 	public float verticalRotation = (float)Math.PI/4;
 	private boolean canJump;
 	private Vector3f editorModeMovementOffset;
+	private GameScene scene;
 	
-	public Player(Vector3f pos_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_) {
+	public Player(Vector3f pos_, DiscreteDynamicsWorld world_, SpheresVsCubes applet_, GameScene scene) {
 		super(pos_, PLAYER_INITIAL_RADIUS, PLAYER_MASS, Color.GREEN, world_, applet_);
 		horizontalRotation = 0;
 		body.setFriction(0.8f);
 		canJump = false;
+		this.scene = scene;
+		this.editorModeMovementOffset = new Vector3f(0, 0, 0);
 	}
 	
 	// In editor mode, we must update the position without
@@ -60,7 +63,7 @@ public class Player extends Sphere {
 	@Override
 	public void onCollision(PObject object) {
 		if (object instanceof EndPoint) {
-			applet.changeScene(new GameOverScene(applet));
+			scene.loadNextLevel();
 		}
 		else if (object instanceof Bullet) {
 			object.remove();
@@ -166,7 +169,7 @@ public class Player extends Sphere {
         			-horizontalRotation,
         			verticalRotation - (float)Math.PI/2,
         			0, 
-        			Color.GREEN,
+        			Color.GRAY,
         			this.world,
         			this.applet);
 		}
@@ -179,6 +182,15 @@ public class Player extends Sphere {
 			Vector3f pos = getGraphicsPos();
 	    	pos.add(new Vector3f(-PApplet.cos(this.horizontalRotation)*20, 0, -PApplet.sin(this.horizontalRotation)*20));
             new Enemy(this, pos, this.world, applet);
+        }
+    }
+    
+	// Place end point slightly in front of the player if editing
+    public void placeEndPoint() {
+		if (applet.isEditorMode) {
+			Vector3f pos = getGraphicsPos();
+	    	pos.add(new Vector3f(-PApplet.cos(this.horizontalRotation)*20, 0, -PApplet.sin(this.horizontalRotation)*20));
+            new EndPoint(pos, this.world, applet);
         }
     }
 }

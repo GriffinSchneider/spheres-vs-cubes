@@ -32,7 +32,9 @@ public class MenuScene extends Scene {
         Button playButton = Button.createButton(new Vector2f(applet.width/2 - 50, applet.height/2 + 50), 100, 30, new ButtonCallback() {
             @Override
             public void call() {
-            	applet.changeScene(new GameScene(applet));
+            	GameScene gameScene = new GameScene(applet);
+            	applet.changeScene(gameScene);
+            	gameScene.loadLevel("levels/level1");
             }
         }, applet);
         playButton.fill = Color.GREEN;
