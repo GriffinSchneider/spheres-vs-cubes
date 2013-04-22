@@ -79,7 +79,7 @@ public class GameScene extends Scene {
 		// quality and performance
 		Vector3f worldAabbMin = new Vector3f(-50000, -50000, -50000);
 		Vector3f worldAabbMax = new Vector3f(50000, 50000, 50000);
-		int maxProxies = 200;
+		int maxProxies = 2000;
 		AxisSweep3 overlappingPairCache = new AxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
 		// the default constraint solver. For parallel processing you can use a
