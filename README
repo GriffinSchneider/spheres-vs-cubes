@@ -1,0 +1,64 @@
+Running The Game:
+----------------
+To run the game, just cd into this folder and run "java -jar SpheresVsCubes.jar"
+
+Controls:
+---------
+The basic gameplay controls are:
+  WASD to move horizontally.
+  Move the mouse to look around.
+  Press space to jump.
+  +/- or mouse scroll wheel to zoom the camera in and out.
+
+There are also some other hotkeys available all the time:
+  P - Save the current level to a file.
+  ; - Load a level file.
+  ] - Skip to the next level file (see the Level Progression section).
+  E - toggle level editing mode. Enabling the level editor pauses the physics simulation.
+
+Then, there are many hotkeys useable only in editing mode:
+  Space - hold to move upward
+  Backspace - hold to move downward
+  R - place a ground rectangle.
+  T - place an enemy
+  G - place a level end point
+
+Lastly, there are a bunch of editing-mode-only hotkeys that can be modified by holding Shift, \, or ':
+  Shift - hold to reverse the direction of all the below hotkeys (i.e. move/look in the opposite direction or grow instead of shrink)
+  \ - hold to increase the speed of the change made by each of the below hotkeys (doesn't apply to camera angle snapping)
+  ' - hold to decrease the speed of the change made by each of the below hotkeys (doesn't apply to camera angle snapping)
+  
+  Y - translate the last placed rectangle along the positive X-axis
+  H - translate the last placed rectangle along the positive Y-axis
+  N - translate the last placed rectangle along the positive Z-axis
+  
+  U - increase the size of the last placed rectangle along its X-axis
+  J - increase the size of the last placed rectangle along its Y-axis
+  M - increase the size of the last placed rectangle along its Z-axis
+  
+  I - set the camera's horizontal angle so that it is looking along the positive X-axis
+  K - set the camera's horizontal angle so that it is looking along the positive Z-axis
+  , - set the camera's vertical angle so that it is looking straight down (along the negative Y-axis)
+  O - set the camera's vertical angle to that it is looking straight ahead. (not affected by shift)
+
+Level Progression:
+------------------
+Level ordering (i.e. the level that gets loaded after you reach an endpoint or press "]"
+is implemented with file naming conventions. To load the next level, the game looks at
+the filename of the current level, finds any number of digits [0-9] at the end of the
+filename, treats those digits as an integer, increments that integer by 1, and takes
+the result as the filename of the next level. So, if you want to make your own level
+progression, you could save your levels to files named "mylevel1", "mylevel2", etc. Then,
+load the first level manually by pressing ";" and the game will progress through your levels.
+By default, the game loads the file "levels/level1" and progresses from there.
+
+Videos:
+-------
+Videos have been uploaded to Vimeo, since I'm not sure what formats you'll be able to play.
+There are 2 demo videos, one showing some basic gameplay with a progression through 2 levels
+(although I do enter level editor mode a few times to avoid death :)). All the levels you see
+were created with the in-game level editor. The second video shows me doing various things with
+the level editor.
+
+Gameplay: https://vimeo.com/64566252
+Level editing: https://vimeo.com/64568439
