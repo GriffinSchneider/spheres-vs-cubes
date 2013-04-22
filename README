@@ -43,7 +43,7 @@ Lastly, there are a bunch of editing-mode-only hotkeys that can be modified by h
 
 Level Progression:
 ------------------
-Level ordering (i.e. the level that gets loaded after you reach an endpoint or press "]"
+Level ordering (i.e. the level that gets loaded after you reach an endpoint or press "]")
 is implemented with file naming conventions. To load the next level, the game looks at
 the filename of the current level, finds any number of digits [0-9] at the end of the
 filename, treats those digits as an integer, increments that integer by 1, and takes
