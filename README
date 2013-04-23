@@ -1,5 +1,17 @@
+Game Description:
+-----------------
+Spheres vs. Cubes is a 3D, third-person, physics-simulation-driven platformer with 
+a built-in level editor. You control the green sphere. Your enemies are the red
+cubes, which shoot cube bullets at you. If you get hit with a bullet, you lose health.
+Your current health is represented by the radius of your sphere. If you lose all your health,
+you die. Your goal is to reach the blue sphere, which represents the endpoint of the level.
+If you complete all the levels without dying, you win. At any time, you can enter level editing
+mode, which pauses the game and allows you to add enemies, ground objects, and end points to the
+level, load level files from the filesystem, and save the state of the current level to a file.
+A complete list of the level editor's capabilities can be found in the "Controls" section below.
+
 Running The Game:
-----------------
+-----------------
 To run the game, just cd into this folder and run "java -jar SpheresVsCubes.jar"
 
 Controls:
